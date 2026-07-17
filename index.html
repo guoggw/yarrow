@@ -150,6 +150,47 @@
   .interpret .yao-line.advice .text { color: #e0e0c0; }
   .interpret b { color: #f4e0b0; font-weight: normal; }
 
+  /* ========== 分类解释（事业/爱情/健康/财运） ========== */
+  .aspects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .aspect-card {
+    background: rgba(30, 20, 12, 0.6);
+    border: 1px solid rgba(107, 74, 43, 0.4);
+    border-radius: 8px;
+    padding: 14px;
+    transition: all 0.2s;
+  }
+  .aspect-card:hover {
+    border-color: #c89a5a;
+    background: rgba(40, 28, 16, 0.7);
+  }
+  .aspect-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .aspect-title {
+    font-size: 14px;
+    color: #e8c987;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed rgba(107, 74, 43, 0.4);
+    padding-bottom: 6px;
+  }
+  .aspect-text {
+    font-size: 13px;
+    color: #b89968;
+    line-height: 1.8;
+  }
+  @media (max-width: 600px) {
+    .aspects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .note { font-size: 12px; color: #6a5540; text-align: center; margin-top: 30px; letter-spacing: 2px; }
 
   .taiji {
@@ -479,6 +520,74 @@ const GUA_TIP = {
 64:'尚未渡河。事未成需谨慎，如小狐渡河濡尾则险；坚持正道终有转机。'
 };
 
+/* ========== 六十四卦分类解释（事业/爱情/健康/财运） ========== */
+const GUA_ASPECTS = {
+1:{career:'事业运势正盛，宜积极开拓、自强不息，但防刚愎自用',love:'感情中过于强势，需学会柔和包容，否则易生矛盾',health:'精力充沛，但防过劳伤身、肝火旺盛、头痛失眠',wealth:'财运亨通，可积极投资，但忌贪大求全'},
+2:{career:'宜做辅助角色，跟随主导者更有利，不宜争先冒头',love:'感情中宜顺从配合，不要太强势，柔顺则和',health:'体质偏弱，宜静养休息，防脾胃虚寒',wealth:'财运平稳，不宜冒险投资，守成为上'},
+3:{career:'初创艰难，如种子破土，宜静待时机、寻贤辅助',love:'感情起步艰难，需耐心经营，切忌急躁冒进',health:'身体虚弱期，宜调养休息，防小病拖大',wealth:'财运不佳，暂勿投资，积蓄力量待时而动'},
+4:{career:'事理未明，宜谦虚求教、诚心学习，主动开悟则通',love:'感情懵懂，需学习相处之道，诚心沟通则进',health:'心智未开，宜调整心态，防焦虑抑郁',wealth:'理财知识不足，宜学习投资知识，勿盲目跟风'},
+5:{career:'前方有险须等待，胸有成竹静观其变，切勿急进',love:'缘分未到需等待，强求无益，静待良缘',health:'宜饮食调养、安心休息，切勿急躁伤身',wealth:'财运未到，宜守不宜攻，等待时机再出手'},
+6:{career:'矛盾纠纷，宜早化解、中途和解为吉，硬争到底失利',love:'争执不断，宜主动沟通和解，对簿公堂则两败俱伤',health:'防肝胆不和、情绪郁结，宜疏解压力',wealth:'财运有争，易有财务纠纷，宜协商勿诉讼'},
+7:{career:'团队协作需有德高望重者统领，师出有名则吉',love:'感情中需有主导者，但忌专制，以理服人',health:'宜团体运动，防过度劳累，注意劳逸结合',wealth:'合作求财可成，但需选对伙伴，纪律严明'},
+8:{career:'宜主动结盟、诚信为本，犹豫不决会失去先机',love:'亲密团结，感情和合，宜主动表达诚意',health:'人际关系和谐有利健康，防孤独抑郁',wealth:'合作财运佳，宜结伴求财，诚信为本'},
+9:{career:'力量尚不足，宜静养积累、以柔养刚，切勿贪大',love:'感情小有积蓄但未成熟，宜耐心培养',health:'小有积蓄精力，但防过度消耗，宜节制',wealth:'小财可得，大财难求，宜小额稳健投资'},
+10:{career:'如踩虎尾，需战战兢兢、礼数周全、恭敬温和则无害',love:'感情中需谨言慎行，尊重对方，防触犯底线',health:'身体有隐患，宜小心调养，防意外伤',wealth:'财运险中求，宜谨慎投资，防破财'},
+11:{career:'天地交融、上下和睦，难得吉时，宜把握时机顺势而为',love:'感情和合，天作之合，宜把握良缘',health:'身心调和，健康顺遂，精力充沛',wealth:'财运亨通，投资得利，宜积极把握'},
+12:{career:'天地不交、小人得势，宜潜藏勿露、等待转机',love:'感情闭塞，沟通不畅，宜静待转机',health:'气血不通，宜疏通经络，防郁结成疾',wealth:'财运闭塞，宜守勿攻，防破财被骗'},
+13:{career:'团结一致对外，光明磊落则事成，忌结党营私',love:'志同道合，感情纯粹，宜坦诚相待',health:'社群活动有利健康，防孤立自闭',wealth:'合作求财可成，宜光明正大，忌暗箱操作'},
+14:{career:'柔顺得众、光明鼎盛，需谦逊守成、以德服人',love:'感情丰盛，但忌骄傲自满，需珍惜眼前人',health:'精力旺盛，但防乐极生悲、过度消耗',wealth:'财运鼎盛，大有收获，宜谦逊守成'},
+15:{career:'有实力而不炫耀，君子有始有终，无往不利',love:'谦让有礼，感情和睦，人人乐助',health:'心态平和有利健康，忌争强好胜',wealth:'财运平稳，谦让得财，宜稳健投资'},
+16:{career:'适度娱乐激励人心，宜顺势而行，防沉溺享乐',love:'喜悦和谐，但防乐极生悲、感情游戏',health:'心情愉悦有利健康，忌纵欲过度',wealth:'财运有喜，但防因享乐破财'},
+17:{career:'审时度势、顺应大势，坚持正道则吉，忌盲目附和',love:'随顺感情发展，不强求，但需有原则',health:'顺应自然调养，忌盲目跟风养生',wealth:'顺势求财可成，忌盲目投资'},
+18:{career:'历史遗留问题积重难返，需大力整顿、除旧布新',love:'感情积弊需整治，正视问题、除旧布新',health:'旧疾复发或积累成疾，宜彻底调养',wealth:'财务积弊需整顿，理清旧账、重新规划'},
+19:{career:'以上御下，宜诚信管理、亲身督察，警惕月盈则亏',love:'感情中宜主动关怀，但忌控制欲过强',health:'身体渐盛，防盛极而衰，宜节制',wealth:'财运上升，但防盛极转衰，宜见好就收'},
+20:{career:'宜静观全局、以身作则，端庄有威仪则化人无形',love:'观察感情态势，反躬自省，勿盲目行动',health:'宜静观身体状况，定期体检，防微杜渐',wealth:'观察财运走势，宜静不宜动，等待时机'},
+21:{career:'前有阻隔需强力清除，宜果断判决、法必严明',love:'感情障碍需果断清除，正视问题、不回避',health:'防急性病症，宜果断就医、不拖延',wealth:'财务障碍需强力清除，宜果断处理'},
+22:{career:'修饰外表小有帮助，但内在朴实为本，白贲无华上品',love:'外表装饰有助，但真诚为本，勿虚伪',health:'外表调理有益，但内在调养为本',wealth:'包装营销小助，但实力为本，勿本末倒置'},
+23:{career:'阴盛阳衰、大势衰败，宜守勿动、避其锋芒',love:'感情凋零，宜守勿攻，等待转机',health:'身体衰弱，宜静养休息，防大病',wealth:'财运衰败，宜守财勿投资'},
+24:{career:'转机初现、否极泰来，宜顺势而为、重新出发',love:'感情转机出现，宜重新出发、把握良缘',health:'身体好转，宜顺势调养、恢复健康',wealth:'财运回转，宜重新规划、稳健投资'},
+25:{career:'守本分则吉，勿妄求非分之得，不测之灾亦坦然承受',love:'感情顺其自然，勿妄求，真诚则成',health:'防意外之灾，宜坦然面对、顺势调养',wealth:'财运自然，勿妄求横财，守正得财'},
+26:{career:'厚积薄发、才华内蕴，宜进修养德、可担大任',love:'感情积累深厚，宜适时表达、修德感人',health:'精力积蓄，宜适度释放、防过盛',wealth:'大有积蓄，宜厚积薄发、稳健投资'},
+27:{career:'养身养德须走正道则吉，勿贪口腹之欲、玩物丧志',love:'感情需滋养，走正道则吉，忌贪图享乐',health:'养生之道，宜饮食有节、起居有常',wealth:'财运如饮食，宜节制、量入为出'},
+28:{career:'栋梁将折、非常之秋，需当机立断、有担当者挽狂澜',love:'感情失衡，需有担当者出面调整、挽救',health:'身体过度负荷，需立即调整、防崩溃',wealth:'财务失衡，需紧急调整、防破产'},
+29:{career:'危险接连而至，宜心怀诚信、稳扎稳打走出困境',love:'感情多险，宜诚心相待、共渡难关',health:'重病缠身，宜坚定信心、稳步调养',wealth:'财运多险，宜谨慎守财、防连环损失'},
+30:{career:'像火附于物需依附正道，虚心谦下、柔顺中正则亨',love:'感情需依附正道，虚心柔和则成',health:'宜依附正道养生，忌偏门邪道',wealth:'财运需依附正道，宜稳健投资'},
+31:{career:'感应两情，宜真诚合作、上下感应则事成',love:'少男少女相感相合，婚恋和合、真诚则吉',health:'身心感应，宜调和身心、保持平衡',wealth:'合作感应得财，宜真诚合作'},
+32:{career:'夫妻恒久之象，事业须持之以恒，忌朝三暮四',love:'恒久之道，感情需坚持，忌三心二意',health:'养生需持之以恒，忌三天打鱼两天晒网',wealth:'投资需长期坚持，忌频繁变动'},
+33:{career:'小人渐长时机不利，宜及时抽身而退、留余地',love:'感情不利，宜暂时退避、给彼此空间',health:'身体渐弱，宜退守调养、勿逞强',wealth:'财运退避，宜守财勿投资'},
+34:{career:'力量鼎盛易过刚必折，宜循礼守正、勿恃强逞威',love:'感情中过于强势，宜柔和守礼',health:'精力过盛，防过刚伤身、肝火旺',wealth:'财运强盛，但防过刚破财'},
+35:{career:'旭日东升之象，宜积极进取、光明磊落，得提拔之机',love:'感情光明，宜主动追求、真诚表达',health:'身体上升，精力充沛，宜积极锻炼',wealth:'财运上升，宜积极投资、把握良机'},
+36:{career:'贤者受挫如日入地，宜韬光养晦、内明外顺、忍辱负重',love:'感情受挫，宜韬光养晦、等待转机',health:'身体受损，宜内养外顺、忍辱调养',wealth:'财运受伤，宜守财勿露、等待时机'},
+37:{career:'齐家有道、各安其位，从家庭内部理顺开始',love:'家庭伦理，夫妻各正其位则家兴',health:'家庭和睦有利健康，防家气致病',wealth:'家庭理财，各安其位则财兴'},
+38:{career:'乖离分歧，宜小事求同存异，勿强求一致',love:'意见不合，宜求同存异、勿强求',health:'身心不和，宜调和、勿强求',wealth:'财运有分歧，宜小心理财、勿贪大'},
+39:{career:'前有险阻、举步维艰，宜就近寻援、见机行事',love:'感情难行，宜寻援助、勿硬闯',health:'病情复杂，宜寻名医、勿硬扛',wealth:'财运蹇难，宜守勿攻、寻援助'},
+40:{career:'困境解除、大赦冰消，宜速决速改、宽宥过失',love:'困境解除，宜速和解、宽宥对方',health:'病困解除，宜速调养、恢复健康',wealth:'财务困境解除，宜速调整、把握良机'},
+41:{career:'损己益人，适度减损换长远利益，先舍后得',love:'感情需付出，适度牺牲换长久，诚信为要',health:'损欲养生，节制欲望有利健康',wealth:'先舍后得，适度投资换长远利益'},
+42:{career:'得人心之象、上下同心，宜积极行动、兴利除弊',love:'损上益下，感情中宜多付出、得人心',health:'身体受益，宜积极调养、增益健康',wealth:'得人心得财，宜积极行动、兴利除弊'},
+43:{career:'阳盛决阴、除恶务尽，宜公开果断、堂堂正正',love:'果断清除感情障碍，宜公开坦诚',health:'果断去除病根，宜果断就医',wealth:'果断清除财务障碍，宜决断'},
+44:{career:'不期而遇，宜警惕小人渐进、审慎交往',love:'不期而遇，防小人介入、审慎交往',health:'防意外之疾，宜警惕、审慎调养',wealth:'意外之财需警惕，防小人算计'},
+45:{career:'人才云集、事业将兴，宜祭祀敬慎、防内部争斗',love:'聚集英才，感情丰富，防内部争斗',health:'身体聚集能量，防内耗',wealth:'人才聚财，宜团结求财、防内斗'},
+46:{career:'木自地生、循序渐进，宜见贵人、拾级而上',love:'感情渐长，宜循序渐进、勿躁进',health:'身体渐长，宜循序调养',wealth:'财运上升，宜循序渐进、勿躁进'},
+47:{career:'资源匮乏、有话难言，宜守正待时、坚持则出困',love:'困顿窘迫，宜守正待时、坚持则通',health:'资源匮乏，宜守正调养、坚持则愈',wealth:'财运困顿，宜守财待时'},
+48:{career:'如古井供人取饮，宜修身养德以润泽他人',love:'井养不穷，感情需持续滋养、勿废弃初心',health:'如井水养人，宜持续调养、勿废弃',wealth:'井养之财，宜持续经营、勿废弃'},
+49:{career:'旧制不适宜、改革得孚，须顺势而为、择时而动',love:'感情需变革，顺势而为、择时而变',health:'身体需调整，变革养生方式',wealth:'财运需变革，改革理财方式'},
+50:{career:'稳固成型之象，宜纳贤养士、正位固本',love:'鼎新之象，感情需稳固、正位固本',health:'身体需稳固，宜调养固本',wealth:'财运稳固，宜正位固本、鼎足而立'},
+51:{career:'突发变故、雷厉风行，宜临危不乱、反躬自省',love:'感情有惊，宜临危不乱、反省自身',health:'突发之疾，宜临危不乱、及时就医',wealth:'财运有惊，宜临危不乱、谨慎应对'},
+52:{career:'当止则止、制心止念，安分守己、不为外物所动',love:'感情宜止则止，安分守己、勿妄动',health:'身心宜静，止念养神、安分守己',wealth:'财运宜止，守财勿动、安分守己'},
+53:{career:'像鸿雁南飞、慢慢积累，宜按部就班、忌躁进',love:'循序渐进，感情需慢慢培养、忌躁进',health:'身体渐长，宜循序调养、忌躁进',wealth:'财运渐进，宜按部就班、忌躁进'},
+54:{career:'名分不正、勉强结合有不利，宜三思而后行',love:'婚嫁之凶，名分不正、勉强结合不利',health:'身体失衡，勉强为之有损',wealth:'财运不正，勉强求财有损'},
+55:{career:'太阳当空正盛，宜及时行事、把握当下',love:'丰盛盛大，感情正盛，宜把握当下',health:'精力正盛，宜及时锻炼、把握当下',wealth:'财运鼎盛，宜及时投资、把握当下'},
+56:{career:'他乡漂泊、根基不稳，宜小心谦卑、保持初心',love:'旅居客居，感情不稳，宜小心谦卑',health:'身体不稳，宜小心调养、保持初心',wealth:'财运漂泊，宜守财勿投资'},
+57:{career:'像风无孔不入，宜顺势渗透、柔中带韧、慢功细活',love:'柔顺入伏，感情宜顺势渗透、柔中带韧',health:'身体宜柔顺调养、慢功出细活',wealth:'财运宜顺势渗透、柔中带韧'},
+58:{career:'和悦沟通事顺，宜诚信喜谈、以言悦人',love:'喜悦交流，感情和悦、诚信则成',health:'心情喜悦有利健康，宜乐观',wealth:'和悦得财，宜诚信沟通求财'},
+59:{career:'人心涣散需重聚，宜借助大义号召、共渡时艰',love:'涣散离散，感情需重聚、共渡时艰',health:'身心涣散，宜重聚精神、共渡难关',wealth:'财运涣散，宜重聚财力、共渡时艰'},
+60:{career:'凡事有节则通，量入为出；苦节自虐则难持久',love:'节制有度，感情需有节制、勿过度',health:'节制养生，量入为出、勿苦节',wealth:'节制理财，量入为出、勿苦节'},
+61:{career:'中心诚信、感化万物，即便艰险大事亦可涉',love:'诚信内蕴，感情以诚感人、则通',health:'诚信养心，身心调和则健康',wealth:'诚信得财，即便艰险亦可涉'},
+62:{career:'小事可为、大事不可为，宜俭朴谦下',love:'小事顺遂、大事谨慎，感情宜小事用心',health:'小恙可愈、大病需防，宜俭朴养生',wealth:'小财可得、大财难求，宜俭朴'},
+63:{career:'事已成功但盛极将变，宜居安思危、慎终如始',love:'事已成但防变，感情宜居安思危',health:'病已愈但防复发，宜慎终如始',wealth:'财已得但防散，宜居安思危'},
+64:{career:'事未成需谨慎，如小狐渡河濡尾则险；坚持正道终有转机',love:'事未成需谨慎，感情需坚持正道',health:'病未愈需谨慎，坚持调养终有转机',wealth:'财未成需谨慎，坚持正道终有转机'}
+};
+
 /* ========== 爻辞白话解读辅助规则 ========== */
 /* 通过关键字自动补充白话，尽量点破意思 */
 function yaoPlain(text, position) {
@@ -683,6 +792,34 @@ function renderInterpret(yaos, changingIdx, benId, bianId) {
   html += `<div class="section-title">◆ 本卦 · ${g[0]}（第${benId}卦）</div>`;
   html += `<div class="yao-line"><span class="label">卦辞原文</span><span class="text">${g[1]}</span></div>`;
   html += `<div class="yao-line plain"><span class="label">白话卦意</span><span class="text">${GUA_TIP[benId] || ''}</span></div>`;
+  
+  // 分类解释（事业/爱情/健康/财运）
+  const aspects = GUA_ASPECTS[benId];
+  if (aspects) {
+    html += `<div class="section-title">◆ 分 类 解 释</div>`;
+    html += `<div class="aspects-grid">
+      <div class="aspect-card">
+        <div class="aspect-icon">💼</div>
+        <div class="aspect-title">事 业</div>
+        <div class="aspect-text">${aspects.career}</div>
+      </div>
+      <div class="aspect-card">
+        <div class="aspect-icon">❤️</div>
+        <div class="aspect-title">爱 情</div>
+        <div class="aspect-text">${aspects.love}</div>
+      </div>
+      <div class="aspect-card">
+        <div class="aspect-icon">🏥</div>
+        <div class="aspect-title">健 康</div>
+        <div class="aspect-text">${aspects.health}</div>
+      </div>
+      <div class="aspect-card">
+        <div class="aspect-icon">💰</div>
+        <div class="aspect-title">财 运</div>
+        <div class="aspect-text">${aspects.wealth}</div>
+      </div>
+    </div>`;
+  }
 
   // 动爻辞（本卦）
   if (nChange > 0 && nChange < 6) {
@@ -715,7 +852,83 @@ function renderInterpret(yaos, changingIdx, benId, bianId) {
   const summary = summarize(g[1], nChange > 0 && nChange < 6 ? changingIdx.map(i => g[i + 2]).join('；') : g[1], bianId ? GUA[bianId][1] : '');
   html += `<div class="yao-line advice"><span class="label">吉凶倾向</span><span class="text">${summary}</span></div>`;
 
+  // 分类断语（事业/爱情/健康/财运）
+  const benAsp = GUA_ASPECTS[benId];
+  const bianAsp = (bianId && nChange > 0) ? GUA_ASPECTS[bianId] : null;
+  if (benAsp) {
+    const aspectLabels = [
+      { key: 'career', icon: '💼', title: '事业' },
+      { key: 'love',   icon: '❤️', title: '爱情' },
+      { key: 'health', icon: '🏥', title: '健康' },
+      { key: 'wealth', icon: '💰', title: '财运' }
+    ];
+    html += `<div class="section-title">◆ 分 类 断 语</div>`;
+    if (bianAsp) {
+      // 有变卦：本卦→变卦→注意
+      html += `<div style="font-size:13px;color:#9a8060;line-height:1.8;margin-bottom:12px;padding:8px 12px;background:rgba(20,14,8,.4);border-radius:6px;">`; 
+      html += `当前处于<b style="color:#e8c987">「${GUA[benId][0]}」</b>的状态，事态将向<b style="color:#e8c987">「${GUA[bianId][0]}」</b>方向发展。以下为各方面的具体解读：`;
+      html += `</div>`;
+      html += `<div class="aspects-grid">`;
+      aspectLabels.forEach(a => {
+        html += `<div class="aspect-card">
+          <div class="aspect-icon">${a.icon}</div>
+          <div class="aspect-title">${a.title}</div>
+          <div class="aspect-text">
+            <div style="margin-bottom:6px;"><b style="color:#c89a5a;">现状：</b>${benAsp[a.key]}</div>
+            <div style="margin-bottom:6px;"><b style="color:#8ab4f8;">趋向：</b>${bianAsp[a.key]}</div>
+            <div style="color:#d4a870;font-size:12px;border-top:1px dashed rgba(107,74,43,.3);padding-top:6px;margin-top:4px;"><b>⚡ 注意：</b>${getTransitionNote(a.key, benId, bianId)}</div>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    } else {
+      // 静卦或六爻皆变：只看本卦/变卦
+      const aspSource = (nChange === 6 && bianAsp) ? bianAsp : benAsp;
+      const aspTitle = (nChange === 6 && bianAsp) ? `六爻皆变，以变卦「${GUA[bianId][0]}」为主` : `静卦，以本卦「${GUA[benId][0]}」为主`;
+      html += `<div style="font-size:13px;color:#9a8060;line-height:1.8;margin-bottom:12px;padding:8px 12px;background:rgba(20,14,8,.4);border-radius:6px;">`;
+      html += `${aspTitle}，各方面解读如下：`;
+      html += `</div>`;
+      html += `<div class="aspects-grid">`;
+      aspectLabels.forEach(a => {
+        html += `<div class="aspect-card">
+          <div class="aspect-icon">${a.icon}</div>
+          <div class="aspect-title">${a.title}</div>
+          <div class="aspect-text">${aspSource[a.key]}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+  }
+
   el.innerHTML = html;
+}
+
+/* 根据本卦→变卦生成过渡注意事项 */
+function getTransitionNote(aspect, benId, bianId) {
+  const notes = {
+    career: [
+      '从当前格局转向新态势，切忌操之过急，顺势而为方可成事',
+      '事业将经历转变期，旧模式需放下，新方向要大胆尝试',
+      '过渡期宜稳不宜急，守住本心、踏实做事方能顺利过渡'
+    ],
+    love: [
+      '感情状态将发生变化，需调整相处方式，多沟通理解',
+      '关系将从一个阶段进入另一个阶段，顺其自然、真诚以待',
+      '感情转变期切忌强求，给彼此时间和空间，水到渠成'
+    ],
+    health: [
+      '身体状况将随事态变化而波动，注意及时调整作息',
+      '从调养期进入恢复期，保持良好习惯、切勿松懈',
+      '健康方面需持续关注，转变期更要谨慎，定期体检为佳'
+    ],
+    wealth: [
+      '财运将从一种格局转向另一种，投资节奏需随之调整',
+      '理财方式需要转变，旧策略可能不再适用，灵活应变',
+      '过渡期财运不稳，宜守不宜攻，待局势明朗再出手'
+    ]
+  };
+  const arr = notes[aspect] || notes.career;
+  return arr[(benId + bianId) % arr.length];
 }
 
 /* 根据关键字统计吉凶倾向 */
