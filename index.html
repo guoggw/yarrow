@@ -852,7 +852,83 @@ function renderInterpret(yaos, changingIdx, benId, bianId) {
   const summary = summarize(g[1], nChange > 0 && nChange < 6 ? changingIdx.map(i => g[i + 2]).join('；') : g[1], bianId ? GUA[bianId][1] : '');
   html += `<div class="yao-line advice"><span class="label">吉凶倾向</span><span class="text">${summary}</span></div>`;
 
+  // 分类断语（事业/爱情/健康/财运）
+  const benAsp = GUA_ASPECTS[benId];
+  const bianAsp = (bianId && nChange > 0) ? GUA_ASPECTS[bianId] : null;
+  if (benAsp) {
+    const aspectLabels = [
+      { key: 'career', icon: '💼', title: '事业' },
+      { key: 'love',   icon: '❤️', title: '爱情' },
+      { key: 'health', icon: '🏥', title: '健康' },
+      { key: 'wealth', icon: '💰', title: '财运' }
+    ];
+    html += `<div class="section-title">◆ 分 类 断 语</div>`;
+    if (bianAsp) {
+      // 有变卦：本卦→变卦→注意
+      html += `<div style="font-size:13px;color:#9a8060;line-height:1.8;margin-bottom:12px;padding:8px 12px;background:rgba(20,14,8,.4);border-radius:6px;">`; 
+      html += `当前处于<b style="color:#e8c987">「${GUA[benId][0]}」</b>的状态，事态将向<b style="color:#e8c987">「${GUA[bianId][0]}」</b>方向发展。以下为各方面的具体解读：`;
+      html += `</div>`;
+      html += `<div class="aspects-grid">`;
+      aspectLabels.forEach(a => {
+        html += `<div class="aspect-card">
+          <div class="aspect-icon">${a.icon}</div>
+          <div class="aspect-title">${a.title}</div>
+          <div class="aspect-text">
+            <div style="margin-bottom:6px;"><b style="color:#c89a5a;">现状：</b>${benAsp[a.key]}</div>
+            <div style="margin-bottom:6px;"><b style="color:#8ab4f8;">趋向：</b>${bianAsp[a.key]}</div>
+            <div style="color:#d4a870;font-size:12px;border-top:1px dashed rgba(107,74,43,.3);padding-top:6px;margin-top:4px;"><b>⚡ 注意：</b>${getTransitionNote(a.key, benId, bianId)}</div>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    } else {
+      // 静卦或六爻皆变：只看本卦/变卦
+      const aspSource = (nChange === 6 && bianAsp) ? bianAsp : benAsp;
+      const aspTitle = (nChange === 6 && bianAsp) ? `六爻皆变，以变卦「${GUA[bianId][0]}」为主` : `静卦，以本卦「${GUA[benId][0]}」为主`;
+      html += `<div style="font-size:13px;color:#9a8060;line-height:1.8;margin-bottom:12px;padding:8px 12px;background:rgba(20,14,8,.4);border-radius:6px;">`;
+      html += `${aspTitle}，各方面解读如下：`;
+      html += `</div>`;
+      html += `<div class="aspects-grid">`;
+      aspectLabels.forEach(a => {
+        html += `<div class="aspect-card">
+          <div class="aspect-icon">${a.icon}</div>
+          <div class="aspect-title">${a.title}</div>
+          <div class="aspect-text">${aspSource[a.key]}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+  }
+
   el.innerHTML = html;
+}
+
+/* 根据本卦→变卦生成过渡注意事项 */
+function getTransitionNote(aspect, benId, bianId) {
+  const notes = {
+    career: [
+      '从当前格局转向新态势，切忌操之过急，顺势而为方可成事',
+      '事业将经历转变期，旧模式需放下，新方向要大胆尝试',
+      '过渡期宜稳不宜急，守住本心、踏实做事方能顺利过渡'
+    ],
+    love: [
+      '感情状态将发生变化，需调整相处方式，多沟通理解',
+      '关系将从一个阶段进入另一个阶段，顺其自然、真诚以待',
+      '感情转变期切忌强求，给彼此时间和空间，水到渠成'
+    ],
+    health: [
+      '身体状况将随事态变化而波动，注意及时调整作息',
+      '从调养期进入恢复期，保持良好习惯、切勿松懈',
+      '健康方面需持续关注，转变期更要谨慎，定期体检为佳'
+    ],
+    wealth: [
+      '财运将从一种格局转向另一种，投资节奏需随之调整',
+      '理财方式需要转变，旧策略可能不再适用，灵活应变',
+      '过渡期财运不稳，宜守不宜攻，待局势明朗再出手'
+    ]
+  };
+  const arr = notes[aspect] || notes.career;
+  return arr[(benId + bianId) % arr.length];
 }
 
 /* 根据关键字统计吉凶倾向 */
