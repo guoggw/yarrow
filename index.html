@@ -147,6 +147,48 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 /* ===== 底部 ===== */
 .footer{text-align:center;margin-top:48px;font-size:12px;color:#4a3a28;letter-spacing:3px}
 
+/* ===== 特效层（火力全开）===== */
+#fxCanvas{position:fixed;inset:0;pointer-events:none;z-index:998}
+/* 蓍草辉光 */
+.yarrow-stick{box-shadow:0 0 6px rgba(232,201,135,.5);will-change:transform,opacity}
+.yarrow-stick.bright{filter:brightness(1.8)}
+.yarrow-stick.flash-out{animation:stickFlash .45s ease-out forwards}
+@keyframes stickFlash{0%{filter:brightness(2.5);opacity:1}100%{filter:brightness(1);opacity:.15;transform:scaleY(.3)}}
+/* 进度条辉光脉冲 */
+.progress-bar .fill{box-shadow:0 0 8px rgba(232,201,135,.6)}
+.progress-bar .fill.pulse{animation:progPulse .4s ease-out}
+@keyframes progPulse{0%{box-shadow:0 0 4px rgba(232,201,135,.4)}50%{box-shadow:0 0 16px rgba(255,208,112,.95)}100%{box-shadow:0 0 8px rgba(232,201,135,.6)}}
+/* 逐爻绘制：发光笔触 + 能量光晕 */
+.hex-build{position:relative;z-index:0}
+.build-yao{position:relative;will-change:transform,opacity}
+.build-yao .bar{animation:yaoDraw .6s ease-out}
+.build-yao.changing .bar{animation:yaoDraw .6s ease-out,yaoGlow 1s ease-in-out .6s infinite alternate}
+@keyframes yaoDraw{0%{box-shadow:0 0 24px 6px rgba(255,220,140,.95);filter:brightness(2)}60%{box-shadow:0 0 14px 3px rgba(255,208,112,.7)}100%{box-shadow:0 0 8px rgba(232,201,135,.4);filter:brightness(1)}}
+.build-aura{position:absolute;left:50%;top:50%;width:240px;height:240px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(232,201,135,.4) 0%,rgba(200,154,90,.14) 40%,transparent 70%);border-radius:50%;opacity:0;transition:opacity .6s ease;pointer-events:none;z-index:-1;filter:blur(8px)}
+/* 动爻角标 */
+.build-yao .dong-badge{position:absolute;right:-38px;top:50%;transform:translateY(-50%) scale(0);font-size:11px;color:#ffd070;letter-spacing:1px;white-space:nowrap;animation:badgePop .5s cubic-bezier(.34,1.56,.64,1) .15s forwards;text-shadow:0 0 8px rgba(255,208,112,.6)}
+@keyframes badgePop{0%{transform:translateY(-50%) scale(0)}70%{transform:translateY(-50%) scale(1.25)}100%{transform:translateY(-50%) scale(1)}}
+/* 全屏脉动 */
+.flash-overlay{position:fixed;inset:0;z-index:997;pointer-events:none;background:radial-gradient(circle,rgba(255,224,160,.9),rgba(255,208,112,.4));opacity:0}
+.flash-overlay.pulse{animation:screenFlash .45s ease-out}
+@keyframes screenFlash{0%{opacity:0}30%{opacity:.22}100%{opacity:0}}
+/* 卦成光芒 */
+.reveal-overlay{overflow:hidden}
+.reveal-rays{position:absolute;left:50%;top:50%;width:160vmax;height:160vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,rgba(232,201,135,.13) 0deg 6deg,transparent 6deg 30deg);-webkit-mask-image:radial-gradient(circle,rgba(0,0,0,.9) 0%,transparent 62%);mask-image:radial-gradient(circle,rgba(0,0,0,.9) 0%,transparent 62%);animation:raysSpin 16s linear infinite;opacity:0;transition:opacity .4s}
+.reveal-overlay.active .reveal-rays{opacity:1}
+@keyframes raysSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.reveal-text{position:relative;z-index:2}
+.reveal-overlay.active .reveal-text{animation:revealPulse 1.2s ease-out,revealBright 1.8s ease-out}
+@keyframes revealBright{0%{filter:brightness(1)}25%{filter:brightness(2.2);text-shadow:0 0 60px rgba(255,224,160,.95),0 0 120px rgba(255,208,112,.6)}100%{filter:brightness(1)}}
+/* 背景共鸣 + 粒子加密 */
+body::before{transition:filter .4s}
+body.resonate::before{filter:brightness(1.6);transition:filter .12s}
+.particles .p2{display:none}
+.particles.dense .p2{display:block;animation-duration:5s !important}
+/* 静音按钮 */
+.btn-mute{position:fixed;top:16px;right:16px;z-index:1000;width:40px;height:40px;border-radius:50%;border:1px solid rgba(107,74,43,.5);background:rgba(20,14,8,.7);color:#c89a5a;font-size:16px;cursor:pointer;transition:all .3s;line-height:1}
+.btn-mute:hover{border-color:#c89a5a;box-shadow:0 0 12px rgba(200,154,90,.3)}
+
 /* ===== 移动端 ===== */
 @media(max-width:600px){
   .wrap{padding:24px 16px 48px}
@@ -168,6 +210,10 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 <body>
 <!-- 粒子背景 -->
 <div class="particles" id="particles"></div>
+<!-- 特效画布 + 全屏脉动 -->
+<canvas id="fxCanvas"></canvas>
+<div class="flash-overlay" id="flashOverlay"></div>
+<button class="btn-mute" id="btnMute" title="音效开关">🔊</button>
 
 <div class="wrap">
   <!-- 标题区 -->
@@ -196,12 +242,12 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
       <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
     </div>
     <div class="yarrow-viz" id="yarrowViz"></div>
-    <div class="hex-build" id="hexBuild"></div>
+    <div class="hex-build" id="hexBuild"><div class="build-aura" id="buildAura"></div></div>
     <div class="mini-log" id="miniLog"></div>
   </div>
 
   <!-- 揭晓遮罩 -->
-  <div class="reveal-overlay" id="revealOverlay"><div class="reveal-text">卦 成</div></div>
+  <div class="reveal-overlay" id="revealOverlay"><div class="reveal-rays"></div><div class="reveal-text">卦 成</div></div>
 
   <!-- 结果区 -->
   <div class="result-section" id="resultSection">
@@ -216,16 +262,20 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 /* ========== 粒子初始化 ========== */
 (function initParticles(){
   const c=document.getElementById('particles');
-  const n=window.innerWidth<600?12:22;
-  for(let i=0;i<n;i++){
+  const mobile=window.innerWidth<600;
+  function make(cls){
     const p=document.createElement('div');
-    p.className='particle';
+    p.className='particle'+(cls?' '+cls:'');
     p.style.left=Math.random()*100+'%';
     p.style.animationDuration=(8+Math.random()*12)+'s';
     p.style.animationDelay=Math.random()*10+'s';
     p.style.width=p.style.height=(1+Math.random()*2)+'px';
     c.appendChild(p);
   }
+  const n=mobile?12:22;
+  for(let i=0;i<n;i++)make();
+  const n2=mobile?6:14; /* 第二批：起卦期间加密 */
+  for(let i=0;i<n2;i++)make('p2');
 })();
 /* ========== 打字机 ========== */
 (function typewriter(){
@@ -238,6 +288,64 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
     else{clearInterval(iv);setTimeout(()=>{el.innerHTML=text;},2000);}
   },120);
 })();
+
+/* ========== Canvas 粒子特效引擎 ========== */
+const fxC=(()=>{
+  const cv=document.getElementById('fxCanvas'),ctx=cv.getContext('2d');
+  let P=[],running=false;
+  const isMobile=()=>window.innerWidth<600;
+  function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  function tick(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    P=P.filter(p=>p.life>0);
+    for(const p of P){
+      p.life-=p.decay;p.x+=p.vx;p.y+=p.vy;
+      if(p.type==='spark'){p.vy+=0.12;p.vx*=0.98;ctx.globalAlpha=Math.max(p.life,0);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,6.283);ctx.fill();}
+      else if(p.type==='ring'){const pr=1-p.life;ctx.globalAlpha=p.life*0.8;ctx.strokeStyle=p.color;ctx.lineWidth=2.5*p.life;ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.beginPath();ctx.arc(p.x,p.y,p.r0+pr*p.expand,0,6.283);ctx.stroke();}
+      else if(p.type==='text'){ctx.globalAlpha=Math.max(p.life,0);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.font='bold 15px KaiTi,serif';ctx.textAlign='center';ctx.fillText(p.text,p.x,p.y);}
+    }
+    ctx.globalAlpha=1;ctx.shadowBlur=0;
+    if(P.length>0){requestAnimationFrame(tick);}else{running=false;ctx.clearRect(0,0,cv.width,cv.height);}
+  }
+  function go(){if(!running){running=true;requestAnimationFrame(tick);}}
+  const cap=()=>isMobile()?30:60;
+  return{
+    burst(x,y,color,count,speed){
+      count=Math.min(count||18,cap());speed=speed||3.5;
+      for(let i=0;i<count;i++){const a=Math.random()*6.283,v=(0.4+Math.random())*speed;
+        P.push({type:'spark',x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-1,r:1.5+Math.random()*2,life:1,decay:0.02+Math.random()*0.02,color});}
+      go();
+    },
+    ring(x,y,color,r0,expand){P.push({type:'ring',x,y,color,r0:r0||10,expand:expand||90,life:1,decay:0.025});go();},
+    float(x,y,text,color){P.push({type:'text',x,y,vx:0,vy:-0.9,text,color,life:1,decay:0.014});go();}
+  };
+})();
+function fxCenter(el){const r=el.getBoundingClientRect();return[r.left+r.width/2,r.top+r.height/2];}
+/* ========== Web Audio 音效引擎 ========== */
+const sfx=(()=>{
+  let ac=null,muted=false;
+  const vol=()=>(window.innerWidth<600?0.12:0.25);
+  function ensure(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac;}
+  function tone(freq,dur,type,gain,delay){
+    const a=ensure();if(!a||muted)return;
+    const t=a.currentTime+(delay||0),o=a.createOscillator(),g=a.createGain();
+    o.type=type||'sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(gain,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur);
+  }
+  return{
+    unlock(){ensure();},
+    /* 每爻落定：柔和钟声，音高随爻位递升 */
+    yao(idx){const base=[392,440,494,523,587,659][idx]||523;const v=vol();tone(base,0.9,'sine',v);tone(base*2,0.5,'sine',v*0.3);},
+    /* 动爻：叠加清脆亮音 */
+    change(){const v=vol();tone(1319,0.4,'triangle',v*0.8,0.05);tone(1760,0.3,'sine',v*0.5,0.12);},
+    /* 卦成：低频锣声 */
+    gong(){const v=vol();tone(130,2.2,'sine',v*1.2);tone(196,1.8,'sine',v*0.7,0.06);tone(262,1.2,'sine',v*0.4,0.1);},
+    toggle(){muted=!muted;return muted;}
+  };
+})();
+document.getElementById('btnMute').addEventListener('click',function(){this.textContent=sfx.toggle()?'🔇':'🔊';});
 
 /* ========== 八经卦 ========== */
 const TRIGRAM={7:'乾',6:'兑',5:'离',4:'震',3:'巽',2:'坎',1:'艮',0:'坤'};
@@ -540,11 +648,15 @@ async function divine() {
   const progText=document.getElementById('progressText');
   const progFill=document.getElementById('progressFill');
   const btn=document.getElementById('btnStart');
+  const flashEl=document.getElementById('flashOverlay');
   procSec.classList.add('active');
   resSec.classList.remove('active');
-  vizEl.innerHTML='';buildEl.innerHTML='';logEl.innerHTML='';
+  vizEl.innerHTML='';buildEl.innerHTML='<div class="build-aura" id="buildAura"></div>';logEl.innerHTML='';
+  const auraEl=document.getElementById('buildAura');
   btn.disabled=true;
   btn.innerHTML='凝神静气…';
+  sfx.unlock();
+  document.getElementById('particles').classList.add('dense');
   const q=document.getElementById('question').value.trim();
   if(q)log(`所问：<span class="biao">${escapeHtml(q)}</span>`);
   log('取蓍草五十，去一以象太极，其用四十有九。');
@@ -559,23 +671,33 @@ async function divine() {
       changeCount++;
       progText.textContent=`第${CN_NUM[changeCount-1]}变 / 共十八变`;
       progFill.style.width=(changeCount/18*100)+'%';
+      progFill.classList.remove('pulse');void progFill.offsetWidth;progFill.classList.add('pulse');
+      document.body.classList.add('resonate');setTimeout(()=>document.body.classList.remove('resonate'),300);
       // 动画：蓍草分开
       const sticks=vizEl.children;
       const splitPt=Math.floor(Math.random()*(total-2))+1;
       for(let s=0;s<sticks.length;s++){
-        sticks[s].classList.remove('split-left','split-right','removed');
+        sticks[s].classList.remove('split-left','split-right','removed','bright','flash-out');
         if(s<total){
           if(s<splitPt)sticks[s].classList.add('split-left');
           else sticks[s].classList.add('split-right');
         }else sticks[s].classList.add('removed');
       }
+      // 分裂点火花 + 短暂增亮
+      const midStick=sticks[Math.min(splitPt,total-1)];
+      if(midStick){const[mx,my]=fxCenter(midStick);fxC.burst(mx,my,'#ffd070',10,2.5);midStick.classList.add('bright');setTimeout(()=>midStick.classList.remove('bright'),300);}
       await sleep(350);
       const oc=oneChange(total);
       changes.push(oc.used);
+      const oldTotal=total;
       total=oc.remain;
-      // 动画：移除用过的
-      for(let s=total;s<49;s++){if(sticks[s])sticks[s].classList.add('removed');}
+      // 动画：归奇移除（仅新消耗的蓍草闪白金 + 火花 + 上浮余数）
+      for(let s=total;s<oldTotal;s++){if(sticks[s]){sticks[s].classList.remove('removed');sticks[s].classList.add('flash-out');}}
+      const[ex,ey]=fxCenter(vizEl);
+      fxC.burst(ex,ey,'#e8c987',8,2);
+      fxC.float(ex,ey-36,'余'+oc.used,'#ffd070');
       await sleep(250);
+      for(let s=total;s<49;s++){if(sticks[s]){sticks[s].classList.remove('flash-out');sticks[s].classList.add('removed');}}
     }
     const num=total/4;
     yaos.push(num);
@@ -589,14 +711,37 @@ async function divine() {
     yaoDiv.style.animationDelay='0s';
     if(isYang){yaoDiv.innerHTML='<div class="bar"></div>';}
     else{yaoDiv.innerHTML='<div class="bar"></div><div class="bar"></div>';}
+    if(isChanging)yaoDiv.innerHTML+='<span class="dong-badge">动 ✦</span>';
     buildEl.appendChild(yaoDiv);
+    // 落定瞬间：火花 + 圆环 + 钟声
+    const[yx,yy]=fxCenter(yaoDiv);
+    sfx.yao(i);
+    fxC.burst(yx,yy,'#e8c987',12,3);
+    fxC.ring(yx,yy,'#c89a5a',8,60);
+    auraEl.style.opacity=((i+1)/6*0.8).toFixed(2);
+    if(isChanging){
+      // 动爻爆发：金/银大火花 + 冲击波 + 全屏脉动 + 亮音
+      const cBig=(num===9)?'#ffd070':'#cfe0ee';
+      await sleep(200);
+      fxC.burst(yx,yy,cBig,26,5);
+      fxC.ring(yx,yy,cBig,12,110);
+      sfx.change();
+      flashEl.classList.remove('pulse');void flashEl.offsetWidth;flashEl.classList.add('pulse');
+    }
     await sleep(400);
   }
   await sleep(500);
-  // 揭晓特效
+  // 揭晓特效：光芒 + 冲击波 + 锣声
   const overlay=document.getElementById('revealOverlay');
   overlay.classList.add('active');
-  await sleep(1400);
+  sfx.gong();
+  const cx=window.innerWidth/2,cy=window.innerHeight/2;
+  fxC.ring(cx,cy,'#ffd070',20,Math.min(window.innerWidth,520));
+  fxC.burst(cx,cy,'#ffd070',30,6);
+  fxC.burst(cx,cy,'#e8c987',20,4);
+  fxC.burst(40,40,'#c89a5a',8,3);fxC.burst(window.innerWidth-40,40,'#c89a5a',8,3);
+  fxC.burst(40,window.innerHeight-40,'#c89a5a',8,3);fxC.burst(window.innerWidth-40,window.innerHeight-40,'#c89a5a',8,3);
+  await sleep(1800);
   overlay.classList.remove('active');
   await sleep(300);
   // 显示结果
@@ -610,6 +755,8 @@ async function divine() {
   renderInterpret(yaos,changingIdx,benId,bianId,q);
   procSec.classList.remove('active');
   resSec.classList.add('active');
+  document.getElementById('particles').classList.remove('dense');
+  auraEl.style.opacity=0;
   btn.disabled=false;
   btn.innerHTML='起卦<span class="ripple"></span>';
   function log(txt){const d=document.createElement('div');d.innerHTML=txt;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}
@@ -682,10 +829,17 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
     changingIdx.forEach(i => {
       const p = yaoPlain(g[i + 2], i);
       const yaoNum = yaos[i];
-      const yaoLabel = yaoNum === 9 ? '老阳动' : '老阴动';
+      const isYangDong = yaoNum === 9;
+      const yaoLabel = isYangDong ? '老阳动' : '老阴动';
+      const dongMeaning = isYangDong
+        ? '老阳动，是阳刚之势由盛转柔、主动求变之象，宜顺势而为、勿恋栈旧局'
+        : '老阴动，是柔顺之势由静转动、否极泰来之象，宜把握转机、积极应对';
+      const hintSentence = p.hints.length
+        ? `爻辞的意思是：${p.hints.join('；')}。`
+        : '此爻辞需结合你所问之事细细体会。';
       html += `<div class="narrative">
         <div class="narr-lead">✦ 变化出现在第${['一','二','三','四','五','六'][i]}步（${yaoNames[i]} · ${yaoLabel}）</div>
-        <div class="narr-main">${p.position}——${p.hints.length ? p.hints.join('；') : '按爻辞字面意思体会'}</div>
+        <div class="narr-main">这一步正处在「${p.position}」。${hintSentence}${dongMeaning}。</div>
         <div class="quote">${g[i + 2]}</div>
       </div>`;
     });
