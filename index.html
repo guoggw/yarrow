@@ -93,11 +93,9 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .reveal-text{font-size:64px;letter-spacing:20px;color:#e8c987;text-shadow:0 0 40px rgba(232,201,135,.6);animation:revealPulse 1.2s ease-out}
 @keyframes revealPulse{0%{transform:scale(.5);opacity:0}40%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
 
-/* ===== 结果区 ===== */
-.result-section{display:none}
-.result-section.active{display:block}
+/* ===== 结果区（卦象盒）===== */
 .hex-display{display:flex;justify-content:center;gap:48px;margin:32px 0;flex-wrap:wrap}
-.hex-box{text-align:center;min-width:180px;animation:hexReveal .8s ease-out both}
+.hex-box{text-align:center;min-width:180px;animation:hexReveal .8s ease-out both;border:1px solid rgba(200,154,90,.22);border-radius:14px;padding:22px 18px;background:rgba(20,14,8,.45);box-shadow:0 0 28px rgba(200,154,90,.1),inset 0 0 20px rgba(200,154,90,.04)}
 @keyframes hexReveal{from{transform:scale(.6);opacity:0;filter:blur(4px)}to{transform:scale(1);opacity:1;filter:none}}
 .hex-name{font-size:22px;color:#e8c987;margin-bottom:6px;letter-spacing:4px;text-shadow:0 0 12px rgba(232,201,135,.4)}
 .hex-name .ch{display:inline-block;opacity:0;animation:charReveal .4s ease-out forwards}
@@ -147,6 +145,55 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 /* ===== 底部 ===== */
 .footer{text-align:center;margin-top:48px;font-size:12px;color:#4a3a28;letter-spacing:3px}
 
+/* ===== 双页面结构：解卦页（全屏覆盖层）===== */
+#resultBackdrop{position:fixed;inset:0;z-index:499;background:radial-gradient(ellipse at 50% 0%,#16100a 0%,#0a0705 55%,#050302 100%);opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;overflow:hidden}
+#resultBackdrop::after{content:'';position:absolute;left:50%;top:50%;width:150vmin;height:150vmin;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,rgba(200,154,90,.055) 0deg 15deg,transparent 15deg 45deg);border-radius:50%;animation:watermarkSpin 60s linear infinite;-webkit-mask-image:radial-gradient(circle,rgba(0,0,0,.85) 0%,transparent 68%);mask-image:radial-gradient(circle,rgba(0,0,0,.85) 0%,transparent 68%)}
+@keyframes watermarkSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+#pageResult{position:fixed;inset:0;z-index:500;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s}
+#pageResult.active,#resultBackdrop.active{opacity:1;visibility:visible}
+body.locked{overflow:hidden}
+.result-scroll{max-width:720px;margin:0 auto;padding:56px 24px 130px;position:relative;z-index:1}
+/* 门楣（解卦页头部）*/
+.result-header{text-align:center;margin-bottom:8px;opacity:0;transform:translateY(24px) scale(.95);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
+#pageResult.revealed .result-header{opacity:1;transform:none}
+.result-overline{font-size:13px;color:#8a7050;letter-spacing:9px;margin-bottom:16px}
+.result-guaname{font-size:40px;color:#f4e0b0;letter-spacing:10px;font-weight:bold;text-shadow:0 0 24px rgba(232,201,135,.55),0 0 64px rgba(200,120,60,.3)}
+.result-divider{width:200px;height:1px;margin:22px auto 0;background:linear-gradient(90deg,transparent,#c89a5a,transparent);position:relative}
+.result-divider::after{content:'☯';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#c89a5a;font-size:16px;background:#0b0806;padding:0 12px}
+.result-footer{text-align:center;margin-top:56px;font-size:12px;color:#4a3a28;letter-spacing:3px}
+/* 滚动浮现 */
+.sr{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.sr.show{opacity:1;transform:none}
+
+/* ===== 金色双门：开门见卦 ===== */
+#doors{position:fixed;inset:0;z-index:600;pointer-events:none}
+.door{position:absolute;top:0;bottom:0;width:50.5%;background:linear-gradient(135deg,#3a2415 0%,#241509 45%,#1a0f06 100%);box-shadow:inset 0 0 80px rgba(0,0,0,.75);transition:transform .9s cubic-bezier(.7,0,.3,1);will-change:transform}
+.door::before{content:'';position:absolute;inset:20px;border:1px solid rgba(200,154,90,.3);border-radius:4px;box-shadow:inset 0 0 40px rgba(200,154,90,.07)}
+.door::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(200,154,90,.05) 0 1px,transparent 1px 28px)}
+.door-left{left:0;transform:translateX(-101%)}
+.door-right{right:0;transform:translateX(101%)}
+#doors.closed .door-left{transform:translateX(0)}
+#doors.closed .door-right{transform:translateX(0)}
+.door-seam{position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);background:linear-gradient(180deg,transparent 4%,rgba(255,224,160,.95) 50%,transparent 96%);opacity:0;transition:opacity .4s}
+#doors.closed .door-seam{opacity:1;animation:seamPulse 1.2s ease-in-out infinite}
+@keyframes seamPulse{0%,100%{box-shadow:0 0 14px 3px rgba(255,208,112,.55)}50%{box-shadow:0 0 32px 8px rgba(255,224,160,.95)}}
+
+/* ===== 悬浮“再占一卦”按钮 ===== */
+#btnAgain{position:fixed;right:26px;bottom:30px;z-index:610;width:78px;height:78px;border-radius:50%;border:1px solid rgba(200,154,90,.65);background:radial-gradient(circle at 40% 35%,#4a2e14,#241509);color:#f4e0b0;font-family:inherit;font-size:14px;letter-spacing:3px;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(24px);transition:opacity .5s,transform .5s,visibility .5s,box-shadow .3s;box-shadow:0 4px 24px rgba(0,0,0,.6)}
+#btnAgain.show{opacity:1;visibility:visible;transform:none}
+#btnAgain::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:1px solid rgba(200,154,90,.4);animation:rippleOut 2s ease-out infinite}
+#btnAgain:hover{box-shadow:0 6px 32px rgba(200,154,90,.4)}
+
+/* 天机判定流光扫过 */
+.tianji-verdict{position:relative;overflow:hidden}
+.tianji-verdict::after{content:'';position:absolute;top:0;bottom:0;left:0;width:40%;transform:translateX(-160%);background:linear-gradient(105deg,transparent,rgba(255,240,200,.32),transparent);animation:shimmer 3.2s ease-in-out infinite;pointer-events:none}
+@keyframes shimmer{0%{transform:translateX(-160%)}55%,100%{transform:translateX(380%)}}
+
+/* ===== 起卦页：八卦能量阵 ===== */
+.yarrow-viz{position:relative}
+.yarrow-viz::before{content:'';position:absolute;left:50%;top:50%;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(200,154,90,.09) 0deg 15deg,transparent 15deg 45deg);animation:watermarkSpin 24s linear infinite;opacity:0;transition:opacity .6s;pointer-events:none;-webkit-mask-image:radial-gradient(circle,rgba(0,0,0,.9) 0%,transparent 72%);mask-image:radial-gradient(circle,rgba(0,0,0,.9) 0%,transparent 72%)}
+.process-section.active .yarrow-viz::before{opacity:1}
+
 /* ===== 特效层（火力全开）===== */
 #fxCanvas{position:fixed;inset:0;pointer-events:none;z-index:998}
 /* 蓍草辉光 */
@@ -158,6 +205,8 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .progress-bar .fill{box-shadow:0 0 8px rgba(232,201,135,.6)}
 .progress-bar .fill.pulse{animation:progPulse .4s ease-out}
 @keyframes progPulse{0%{box-shadow:0 0 4px rgba(232,201,135,.4)}50%{box-shadow:0 0 16px rgba(255,208,112,.95)}100%{box-shadow:0 0 8px rgba(232,201,135,.6)}}
+.progress-bar .fill.milestone{animation:milePulse .7s ease-out}
+@keyframes milePulse{0%{box-shadow:0 0 4px rgba(232,201,135,.4)}40%{box-shadow:0 0 26px 5px rgba(255,208,112,1)}100%{box-shadow:0 0 8px rgba(232,201,135,.6)}}
 /* 逐爻绘制：发光笔触 + 能量光晕 */
 .hex-build{position:relative;z-index:0}
 .build-yao{position:relative;will-change:transform,opacity}
@@ -203,6 +252,10 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
   .build-yao.yang .bar{width:90px}
   .build-yao.yin .bar{width:41px}
   .reveal-text{font-size:42px;letter-spacing:12px}
+  .result-guaname{font-size:30px;letter-spacing:7px}
+  .result-scroll{padding:44px 18px 120px}
+  #btnAgain{width:66px;height:66px;right:18px;bottom:22px;font-size:12px;letter-spacing:2px}
+  #resultBackdrop::after{opacity:.6}
 }
 @media(pointer:coarse){.btn-divine:hover{transform:none}.aspect-card:hover{transform:none}}
 </style>
@@ -215,7 +268,7 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
 <div class="flash-overlay" id="flashOverlay"></div>
 <button class="btn-mute" id="btnMute" title="音效开关">🔊</button>
 
-<div class="wrap">
+<div class="wrap" id="pageDivine">
   <!-- 标题区 -->
   <div class="title-area enter">
     <div class="taiji-wrap">
@@ -249,14 +302,33 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
   <!-- 揭晓遮罩 -->
   <div class="reveal-overlay" id="revealOverlay"><div class="reveal-rays"></div><div class="reveal-text">卦 成</div></div>
 
-  <!-- 结果区 -->
-  <div class="result-section" id="resultSection">
-    <div class="hex-display" id="hexDisplay"></div>
-    <div class="interpret" id="interpret"></div>
-  </div>
-
   <div class="footer enter enter-d4">— 天垂象 · 见吉凶 · 圣人则之 —</div>
 </div>
+
+<!-- ===== 解卦页（全屏覆盖层）===== -->
+<div id="resultBackdrop"></div>
+<div id="pageResult">
+  <div class="result-scroll">
+    <div class="result-header">
+      <div class="result-overline">天 机 已 现</div>
+      <div class="result-guaname" id="resultGuaName"></div>
+      <div class="result-divider"></div>
+    </div>
+    <div class="hex-display" id="hexDisplay"></div>
+    <div class="interpret" id="interpret"></div>
+    <div class="result-footer">— 天垂象 · 见吉凶 · 圣人则之 —</div>
+  </div>
+</div>
+
+<!-- 金色双门（开门见卦）-->
+<div id="doors">
+  <div class="door door-left"></div>
+  <div class="door door-right"></div>
+  <div class="door-seam"></div>
+</div>
+
+<!-- 悬浮“再占一卦”按钮 -->
+<button id="btnAgain">再占一卦</button>
 
 <script>
 /* ========== 粒子初始化 ========== */
@@ -641,7 +713,6 @@ function oneYao() {
 const CN_NUM=['一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八'];
 async function divine() {
   const procSec=document.getElementById('processSection');
-  const resSec=document.getElementById('resultSection');
   const vizEl=document.getElementById('yarrowViz');
   const buildEl=document.getElementById('hexBuild');
   const logEl=document.getElementById('miniLog');
@@ -650,7 +721,6 @@ async function divine() {
   const btn=document.getElementById('btnStart');
   const flashEl=document.getElementById('flashOverlay');
   procSec.classList.add('active');
-  resSec.classList.remove('active');
   vizEl.innerHTML='';buildEl.innerHTML='<div class="build-aura" id="buildAura"></div>';logEl.innerHTML='';
   const auraEl=document.getElementById('buildAura');
   btn.disabled=true;
@@ -713,9 +783,10 @@ async function divine() {
     else{yaoDiv.innerHTML='<div class="bar"></div><div class="bar"></div>';}
     if(isChanging)yaoDiv.innerHTML+='<span class="dong-badge">动 ✦</span>';
     buildEl.appendChild(yaoDiv);
-    // 落定瞬间：火花 + 圆环 + 钟声
+    // 落定瞬间：火花 + 圆环 + 钟声 + 进度里程碑脉冲
     const[yx,yy]=fxCenter(yaoDiv);
     sfx.yao(i);
+    progFill.classList.remove('milestone');void progFill.offsetWidth;progFill.classList.add('milestone');
     fxC.burst(yx,yy,'#e8c987',12,3);
     fxC.ring(yx,yy,'#c89a5a',8,60);
     auraEl.style.opacity=((i+1)/6*0.8).toFixed(2);
@@ -742,19 +813,44 @@ async function divine() {
   fxC.burst(40,40,'#c89a5a',8,3);fxC.burst(window.innerWidth-40,40,'#c89a5a',8,3);
   fxC.burst(40,window.innerHeight-40,'#c89a5a',8,3);fxC.burst(window.innerWidth-40,window.innerHeight-40,'#c89a5a',8,3);
   await sleep(1800);
-  overlay.classList.remove('active');
-  await sleep(300);
-  // 显示结果
+  // 计算结果（门后准备）
   const benGua=yaos.map(n=>(n===7||n===9)?1:0);
   const bianGua=yaos.map(n=>n===9?0:(n===6?1:((n===7)?1:0)));
   const changingIdx=yaos.map((n,i)=>(n===6||n===9)?i:-1).filter(i=>i>=0);
   const benId=hexIdFromYaos(benGua);
   let bianId=null;
   if(changingIdx.length>0){bianId=hexIdFromYaos(bianGua);log(`变卦 <span class="biao">${GUA[bianId][0]}</span>`);}
+  // 关门（遮住起卦页），门后展开解卦页
+  const doors=document.getElementById('doors');
+  const pageResult=document.getElementById('pageResult');
+  const backdrop=document.getElementById('resultBackdrop');
+  document.getElementById('resultGuaName').textContent=GUA[benId][0];
+  pageResult.classList.remove('revealed');
+  pageResult.scrollTop=0;
+  doors.classList.add('closed');
+  pageResult.classList.add('active');
+  backdrop.classList.add('active');
+  document.body.classList.add('locked');
+  await sleep(700);
+  // 淡出卦成遮罩 → 露出闭合双门（中缝金光）
+  overlay.classList.remove('active');
+  await sleep(500);
+  // 开门见卦：锣声 + 中缝金色爆发
+  sfx.gong();
+  doors.classList.remove('closed');
+  const sx=window.innerWidth/2;
+  for(let yy=window.innerHeight*0.18;yy<window.innerHeight*0.9;yy+=window.innerHeight*0.15){fxC.burst(sx,yy,'#ffd070',9,3.2);}
+  fxC.ring(sx,window.innerHeight/2,'#ffd070',16,200);
+  // 门开同时渲染解析（让入场动画可见）+ 门楣浮现
   renderHex(yaos,changingIdx,benId,bianId);
   renderInterpret(yaos,changingIdx,benId,bianId,q);
+  setupScrollReveal();
+  pageResult.classList.add('revealed');
+  await sleep(900);
+  // 显示“再占”按钮
+  document.getElementById('btnAgain').classList.add('show');
+  // 重置起卦页状态（解卦页后方）
   procSec.classList.remove('active');
-  resSec.classList.add('active');
   document.getElementById('particles').classList.remove('dense');
   auraEl.style.opacity=0;
   btn.disabled=false;
@@ -818,7 +914,7 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
 
   // ===== 2. 现状 · 本卦 =====
   html += `<div class="section-title">◆ 现 状 · 你正处在「${g[0]}」的格局</div>`;
-  html += `<div class="narrative">
+  html += `<div class="narrative sr">
     <div class="narr-main">${tip}</div>
     <div class="quote">${g[1]}</div>
   </div>`;
@@ -837,7 +933,7 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
       const hintSentence = p.hints.length
         ? `爻辞的意思是：${p.hints.join('；')}。`
         : '此爻辞需结合你所问之事细细体会。';
-      html += `<div class="narrative">
+      html += `<div class="narrative sr">
         <div class="narr-lead">✦ 变化出现在第${['一','二','三','四','五','六'][i]}步（${yaoNames[i]} · ${yaoLabel}）</div>
         <div class="narr-main">这一步正处在「${p.position}」。${hintSentence}${dongMeaning}。</div>
         <div class="quote">${g[i + 2]}</div>
@@ -848,7 +944,7 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
   // ===== 4. 趋向 · 变卦 =====
   if (bianId && nChange > 0) {
     html += `<div class="section-title">◆ 趋 向 · 事态将转向「${GUA[bianId][0]}」</div>`;
-    html += `<div class="narrative">
+    html += `<div class="narrative sr">
       <div class="narr-main">${GUA_TIP[bianId] || ''}</div>
       <div class="quote">${GUA[bianId][1]}</div>
     </div>`;
@@ -856,7 +952,7 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
 
   // ===== 5. 锦囊 · 给你的建议 =====
   html += `<div class="section-title">◆ 锦 囊 · 给你的建议</div>`;
-  html += `<div class="narrative advice"><div class="narr-main">${s.advice}</div></div>`;
+  html += `<div class="narrative advice sr"><div class="narr-main">${s.advice}</div></div>`;
 
   // ===== 6. 四维详解（合并后的一套分类卡片）=====
   const benAsp = GUA_ASPECTS[benId];
@@ -870,8 +966,8 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
     ];
     html += `<div class="section-title">◆ 四 维 详 解</div>`;
     if (bianAsp) {
-      html += `<div class="aspects-intro">当前处于<b style="color:#e8c987">「${GUA[benId][0]}」</b>，事态将向<b style="color:#e8c987">「${GUA[bianId][0]}」</b>方向发展，各方面具体如下：</div>`;
-      html += `<div class="aspects-grid">`;
+      html += `<div class="aspects-intro sr">当前处于<b style="color:#e8c987">「${GUA[benId][0]}」</b>，事态将向<b style="color:#e8c987">「${GUA[bianId][0]}」</b>方向发展，各方面具体如下：</div>`;
+      html += `<div class="aspects-grid sr">`;
       aspectLabels.forEach(a => {
         html += `<div class="aspect-card">
           <div class="aspect-icon">${a.icon}</div>
@@ -887,8 +983,8 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
     } else {
       const aspSource = (nChange === 6 && bianAsp) ? bianAsp : benAsp;
       const aspTitle = (nChange === 6 && bianAsp) ? `六爻皆变，以变卦「${GUA[bianId][0]}」为主` : `静卦，以本卦「${GUA[benId][0]}」为主`;
-      html += `<div class="aspects-intro">${aspTitle}，各方面解读如下：</div>`;
-      html += `<div class="aspects-grid">`;
+      html += `<div class="aspects-intro sr">${aspTitle}，各方面解读如下：</div>`;
+      html += `<div class="aspects-grid sr">`;
       aspectLabels.forEach(a => {
         html += `<div class="aspect-card">
           <div class="aspect-icon">${a.icon}</div>
@@ -901,7 +997,7 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
   }
 
   // ===== 7. 占法脚注 =====
-  html += `<div class="footnote">占法说明：${makeAdvice(nChange, benId, bianId, changingIdx).replace(/<[^>]+>/g, '')} 以上解读基于《周易》大衍筮法，仅供参悟。</div>`;
+  html += `<div class="footnote sr">占法说明：${makeAdvice(nChange, benId, bianId, changingIdx).replace(/<[^>]+>/g, '')} 以上解读基于《周易》大衍筮法，仅供参悟。</div>`;
 
   el.innerHTML = html;
   // 逐段淡入动画
@@ -964,15 +1060,50 @@ function summarize(benText, focusText, bianText) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+/* ========== 滚动浮现（IntersectionObserver）========== */
+let srObserver=null;
+function setupScrollReveal(){
+  const pageResult=document.getElementById('pageResult');
+  if(srObserver){srObserver.disconnect();}
+  const items=pageResult.querySelectorAll('.sr');
+  srObserver=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('show');srObserver.unobserve(e.target);}
+    });
+  },{root:pageResult,threshold:0.1});
+  items.forEach(el=>srObserver.observe(el));
+}
+
 document.getElementById('btnStart').addEventListener('click', divine);
 document.getElementById('btnReset').addEventListener('click', () => {
   document.getElementById('processSection').classList.remove('active');
-  document.getElementById('resultSection').classList.remove('active');
   document.getElementById('question').value = '';
   document.getElementById('yarrowViz').innerHTML = '';
   document.getElementById('hexBuild').innerHTML = '';
   document.getElementById('miniLog').innerHTML = '';
   document.getElementById('progressFill').style.width = '0';
+});
+/* 解卦页“再占一卦”：关门 → 重置 → 开门 */
+document.getElementById('btnAgain').addEventListener('click', async () => {
+  const doors=document.getElementById('doors');
+  const pageResult=document.getElementById('pageResult');
+  const backdrop=document.getElementById('resultBackdrop');
+  document.getElementById('btnAgain').classList.remove('show');
+  doors.classList.add('closed');
+  await sleep(950);
+  pageResult.classList.remove('active','revealed');
+  backdrop.classList.remove('active');
+  document.getElementById('question').value='';
+  document.getElementById('processSection').classList.remove('active');
+  document.getElementById('yarrowViz').innerHTML='';
+  document.getElementById('hexBuild').innerHTML='<div class="build-aura" id="buildAura"></div>';
+  document.getElementById('miniLog').innerHTML='';
+  document.getElementById('progressFill').style.width='0';
+  document.getElementById('progressText').textContent='第一变 / 共十八变';
+  window.scrollTo(0,0);
+  document.body.classList.remove('locked');
+  await sleep(250);
+  doors.classList.remove('closed');
 });
 </script>
 </body>
