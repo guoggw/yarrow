@@ -4,384 +4,244 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover" />
 <title>蓍草占卜 · 大衍筮法</title>
-
-<!-- ===== PWA / 添加到主屏幕支持 ===== -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="蓍草占卜" />
 <meta name="application-name" content="蓍草占卜" />
-<meta name="theme-color" content="#1a1410" />
+<meta name="theme-color" content="#0a0806" />
 <meta name="format-detection" content="telephone=no" />
-
-<!-- 应用图标（太极 SVG） -->
 <link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><defs><radialGradient id="b" cx="50%25" cy="35%25"><stop offset="0" stop-color="%233a2a1a"/><stop offset="1" stop-color="%230a0806"/></radialGradient></defs><rect width="180" height="180" rx="36" fill="url(%23b)"/><g transform="translate(90 90)"><circle r="55" fill="none" stroke="%23c89a5a" stroke-width="3"/><path d="M0,-52 A52,52 0 0,1 0,52 A26,26 0 0,1 0,0 A26,26 0 0,0 0,-52 Z" fill="%23e8c987"/><circle cx="0" cy="-26" r="7" fill="%230a0806"/><circle cx="0" cy="26" r="7" fill="%23e8c987"/></g><text x="90" y="168" text-anchor="middle" font-size="14" font-family="serif" fill="%23c89a5a" letter-spacing="4">蓍草占卜</text></svg>' />
 <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="%231a1410"/><g transform="translate(32 32)"><path d="M0,-22 A22,22 0 0,1 0,22 A11,11 0 0,1 0,0 A11,11 0 0,0 0,-22 Z" fill="%23e8c987"/><circle cx="0" cy="-11" r="3" fill="%230a0806"/><circle cx="0" cy="11" r="3" fill="%23e8c987"/></g></svg>' />
-
-<!-- Web App Manifest（内嵌） -->
-<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"蓍草占卜·大衍筮法","short_name":"蓍草占卜","description":"周易大衍筮法在线起卦与卦辞白话解析","start_url":".","display":"standalone","orientation":"portrait","background_color":"%230a0806","theme_color":"%231a1410","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 192 192%22><rect width=%22192%22 height=%22192%22 rx=%2238%22 fill=%22%231a1410%22/><g transform=%22translate(96 96)%22><path d=%22M0,-56 A56,56 0 0,1 0,56 A28,28 0 0,1 0,0 A28,28 0 0,0 0,-56 Z%22 fill=%22%23e8c987%22/><circle cx=%220%22 cy=%22-28%22 r=%227%22 fill=%22%230a0806%22/><circle cx=%220%22 cy=%2228%22 r=%227%22 fill=%22%23e8c987%22/></g></svg>","sizes":"192x192","type":"image/svg+xml"}]}' />
+<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"蓍草占卜·大衍筮法","short_name":"蓍草占卜","description":"周易大衍筮法在线起卦与卦辞白话解析","start_url":".","display":"standalone","orientation":"portrait","background_color":"%230a0806","theme_color":"%230a0806","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 192 192%22><rect width=%22192%22 height=%22192%22 rx=%2238%22 fill=%22%231a1410%22/><g transform=%22translate(96 96)%22><path d=%22M0,-56 A56,56 0 0,1 0,56 A28,28 0 0,1 0,0 A28,28 0 0,0 0,-56 Z%22 fill=%22%23e8c987%22/><circle cx=%220%22 cy=%22-28%22 r=%227%22 fill=%22%230a0806%22/><circle cx=%220%22 cy=%2228%22 r=%227%22 fill=%22%23e8c987%22/></g></svg>","sizes":"192x192","type":"image/svg+xml"}]}' />
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body {
-    background:
-      radial-gradient(ellipse at top, #1a1410 0%, #0a0806 60%, #000 100%);
-    color: #d4b483;
-    font-family: "STKaiti", "KaiTi", "楷体", "SimSun", serif;
-    min-height: 100vh;
-    padding: 20px;
-  }
-  .wrap { max-width: 980px; margin: 0 auto; }
-  h1 {
-    text-align: center; font-size: 34px; letter-spacing: 8px;
-    color: #e8c987; margin: 12px 0 4px;
-    text-shadow: 0 0 20px rgba(232,201,135,.5), 0 0 40px rgba(200,120,60,.2);
-  }
-  .subtitle {
-    text-align: center; color: #9a8060; margin-bottom: 20px;
-    font-size: 14px; letter-spacing: 4px;
-  }
-  .card {
-    background: linear-gradient(135deg, rgba(60,40,25,.65), rgba(30,20,12,.85));
-    border: 1px solid #6b4a2b;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 24px rgba(0,0,0,.5), inset 0 1px 0 rgba(232,201,135,.1);
-  }
-  .card h2 {
-    font-size: 20px; color: #e8c987; letter-spacing: 4px;
-    border-bottom: 1px dashed #6b4a2b; padding-bottom: 8px; margin-bottom: 12px;
-  }
-  .intro { line-height: 1.9; color: #b89968; font-size: 15px; }
-  .intro em { color: #e8c987; font-style: normal; }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0a0806;color:#d4b483;font-family:"STKaiti","KaiTi","楷体","SimSun",serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 20%,#1a1410 0%,#0a0806 50%,#000 100%);z-index:-2}
+.wrap{max-width:720px;margin:0 auto;padding:40px 20px 60px;position:relative;z-index:1}
 
-  .controls { text-align: center; margin: 24px 0; }
-  .question-input {
-    width: 60%; max-width: 500px; padding: 10px 14px;
-    background: rgba(20,14,8,.6); border: 1px solid #6b4a2b;
-    color: #e8c987; font-family: inherit; font-size: 15px;
-    border-radius: 4px; outline: none; letter-spacing: 2px;
-  }
-  .question-input:focus { border-color: #c89a5a; }
-  button {
-    display: inline-block; padding: 10px 30px; margin: 0 6px;
-    background: linear-gradient(180deg, #8a5a2b, #5c3818);
-    border: 1px solid #c89a5a; border-radius: 4px;
-    color: #f4e0b0; font-family: inherit; font-size: 16px;
-    letter-spacing: 4px; cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,220,160,.3);
-    transition: all .25s;
-  }
-  button:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,150,80,.5); }
-  button:active { transform: translateY(1px); }
-  button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+/* ===== 粒子 ===== */
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;width:2px;height:2px;background:rgba(232,201,135,.4);border-radius:50%;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:.6}100%{transform:translateY(-10vh) scale(1.5);opacity:0}}
 
-  .process-area {
-    background: rgba(10,7,4,.6); border-radius: 6px; padding: 16px;
-    min-height: 80px; margin-top: 12px;
-    font-family: "Consolas", monospace; font-size: 13px;
-    color: #b89968; line-height: 1.7;
-    max-height: 260px; overflow-y: auto;
-    border: 1px solid #3a2a1a;
-  }
-  .process-area .step { animation: fade .4s ease-out; }
-  .process-area .biao { color: #e8c987; font-weight: bold; }
-  @keyframes fade { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+/* ===== 入场动画 ===== */
+.enter{opacity:0;transform:translateY(24px);animation:enterUp .8s ease-out forwards}
+@keyframes enterUp{to{opacity:1;transform:none}}
+.enter-d1{animation-delay:.2s}.enter-d2{animation-delay:.5s}.enter-d3{animation-delay:.8s}.enter-d4{animation-delay:1.1s}
 
-  .hex-display {
-    display: flex; justify-content: center; gap: 60px;
-    margin: 30px 0; flex-wrap: wrap;
-  }
-  .hex-box { text-align: center; min-width: 200px; }
-  .hex-name {
-    font-size: 22px; color: #e8c987; margin-bottom: 6px; letter-spacing: 4px;
-    text-shadow: 0 0 10px rgba(232,201,135,.4);
-  }
-  .hex-sub { font-size: 13px; color: #8a7050; margin-bottom: 14px; letter-spacing: 3px; }
-  .hex-visual {
-    display: flex; flex-direction: column-reverse; gap: 8px; padding: 14px;
-    background: rgba(20,14,8,.5); border: 1px solid #4a3220; border-radius: 6px;
-    display: inline-flex; min-width: 180px;
-  }
-  .yao {
-    height: 14px; position: relative; display: flex; align-items: center; justify-content: center;
-    animation: pop .35s ease-out;
-  }
-  @keyframes pop {
-    0% { opacity: 0; transform: scaleX(0); }
-    100% { opacity: 1; transform: scaleX(1); }
-  }
-  .yao .bar { height: 10px; background: linear-gradient(90deg, #c89a5a, #e8c987, #c89a5a); border-radius: 2px; }
-  .yao.yang .bar { width: 160px; }
-  .yao.yin { display: flex; gap: 12px; }
-  .yao.yin .bar { width: 74px; }
-  .yao.changing::after {
-    content: '●'; position: absolute; right: -22px; color: #ff6b3d;
-    font-size: 14px; animation: blink 1.5s infinite;
-  }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
-  .yao.changing .bar { box-shadow: 0 0 12px #ff6b3d; }
+/* ===== 标题区 ===== */
+.title-area{text-align:center;margin-bottom:48px}
+.taiji-wrap{position:relative;display:inline-block;width:90px;height:90px;margin-bottom:16px}
+.taiji-ring{position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(200,154,90,.3);animation:ringPulse 3s ease-in-out infinite}
+.taiji-ring:nth-child(2){inset:-16px;animation-delay:1s;border-color:rgba(200,154,90,.15)}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.08);opacity:1}}
+.taiji-svg{width:90px;height:90px;animation:taijiSpin 20s linear infinite}
+@keyframes taijiSpin{to{transform:rotate(360deg)}}
+h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(232,201,135,.4),0 0 60px rgba(200,120,60,.15);margin-bottom:12px}
+.subtitle{font-size:15px;color:#9a8060;letter-spacing:3px;min-height:24px}
+.subtitle .cursor{display:inline-block;width:1px;height:14px;background:#c89a5a;margin-left:2px;animation:blink 1s step-end infinite;vertical-align:middle}
+@keyframes blink{50%{opacity:0}}
 
-  .interpret { line-height: 2; font-size: 15px; }
-  .interpret .label {
-    display: inline-block; min-width: 90px; color: #c89a5a; letter-spacing: 2px;
-  }
-  .interpret .text { color: #d4b483; }
-  .interpret .yao-line { padding: 4px 0; border-bottom: 1px dotted #3a2a1a; }
-  .interpret .yao-line:last-child { border-bottom: none; }
-  .interpret .yao-line.change { background: rgba(255,107,61,.08); }
-  .interpret .yao-line.change .label { color: #ff9060; }
-  .interpret .section-title {
-    color: #e8c987; font-size: 15px; letter-spacing: 3px;
-    margin: 16px 0 8px; padding-left: 4px;
-    border-left: 3px solid #c89a5a;
-    padding: 4px 0 4px 10px;
-    background: linear-gradient(90deg, rgba(200,154,90,.12), transparent);
-  }
-  .interpret .yao-line.plain { background: rgba(232,201,135,.05); }
-  .interpret .yao-line.plain .label { color: #8fb96b; }
-  .interpret .yao-line.plain .text { color: #e0d0a8; }
-  .interpret .plain-text {
-    display: inline-block; margin-top: 4px; color: #a8c880;
-    font-size: 14px; line-height: 1.7;
-  }
-  .interpret .yao-line.advice { background: rgba(120,180,120,.06); padding: 8px 4px; }
-  .interpret .yao-line.advice .label { color: #b0d090; }
-  .interpret .yao-line.advice .text { color: #e0e0c0; }
-  .interpret b { color: #f4e0b0; font-weight: normal; }
+/* ===== 仪式区 ===== */
+.ceremony{text-align:center;margin-bottom:40px}
+.guide-text{font-size:15px;color:#8a7050;letter-spacing:2px;margin-bottom:28px;line-height:2}
+.guide-text em{color:#c89a5a;font-style:normal}
+.question-input{width:100%;max-width:400px;padding:14px 18px;background:rgba(20,14,8,.7);border:1px solid rgba(107,74,43,.5);color:#e8c987;font-family:inherit;font-size:15px;border-radius:8px;outline:none;letter-spacing:2px;text-align:center;transition:border-color .3s,box-shadow .3s}
+.question-input:focus{border-color:#c89a5a;box-shadow:0 0 20px rgba(200,154,90,.15)}
+.question-input::placeholder{color:#6a5540}
 
-  /* ========== 分类解释（事业/爱情/健康/财运） ========== */
-  .aspects-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin: 16px 0;
-  }
-  .aspect-card {
-    background: rgba(30, 20, 12, 0.6);
-    border: 1px solid rgba(107, 74, 43, 0.4);
-    border-radius: 8px;
-    padding: 14px;
-    transition: all 0.2s;
-  }
-  .aspect-card:hover {
-    border-color: #c89a5a;
-    background: rgba(40, 28, 16, 0.7);
-  }
-  .aspect-icon {
-    font-size: 20px;
-    margin-bottom: 6px;
-  }
-  .aspect-title {
-    font-size: 14px;
-    color: #e8c987;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    border-bottom: 1px dashed rgba(107, 74, 43, 0.4);
-    padding-bottom: 6px;
-  }
-  .aspect-text {
-    font-size: 13px;
-    color: #b89968;
-    line-height: 1.8;
-  }
-  @media (max-width: 600px) {
-    .aspects-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+/* 圆形起卦按钮 */
+.btn-divine{position:relative;width:100px;height:100px;border-radius:50%;border:2px solid #c89a5a;background:radial-gradient(circle at 40% 35%,#5c3818,#2a1810);color:#f4e0b0;font-family:inherit;font-size:20px;letter-spacing:6px;cursor:pointer;margin:28px auto 0;display:block;transition:all .3s;box-shadow:0 4px 24px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,220,160,.2)}
+.btn-divine:hover{transform:scale(1.05);box-shadow:0 6px 32px rgba(200,154,90,.3),inset 0 1px 0 rgba(255,220,160,.3)}
+.btn-divine:active{transform:scale(.97)}
+.btn-divine:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-divine .ripple{position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(200,154,90,.5);animation:rippleOut 1.5s ease-out infinite}
+@keyframes rippleOut{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.6);opacity:0}}
+.btn-reset{display:inline-block;margin-top:16px;padding:8px 24px;background:none;border:1px solid rgba(107,74,43,.5);border-radius:4px;color:#8a7050;font-family:inherit;font-size:13px;letter-spacing:3px;cursor:pointer;transition:all .3s}
+.btn-reset:hover{border-color:#c89a5a;color:#c89a5a}
 
-  .note { font-size: 12px; color: #6a5540; text-align: center; margin-top: 30px; letter-spacing: 2px; }
+/* ===== 起卦过程 ===== */
+.process-section{display:none;margin-bottom:40px}
+.process-section.active{display:block}
+.progress-wrap{text-align:center;margin-bottom:20px}
+.progress-text{font-size:13px;color:#8a7050;letter-spacing:2px;margin-bottom:8px}
+.progress-bar{width:200px;height:3px;background:rgba(107,74,43,.3);border-radius:2px;margin:0 auto;overflow:hidden}
+.progress-bar .fill{height:100%;width:0;background:linear-gradient(90deg,#8a5a2b,#e8c987);border-radius:2px;transition:width .4s ease}
+/* 蓍草可视化 */
+.yarrow-viz{display:flex;justify-content:center;align-items:flex-end;gap:2px;height:80px;margin:20px 0;padding:10px;background:rgba(10,7,4,.5);border-radius:8px;border:1px solid rgba(58,42,26,.4)}
+.yarrow-stick{width:3px;height:50px;background:linear-gradient(180deg,#e8c987,#8a5a2b);border-radius:1px;transition:all .5s ease;transform-origin:bottom}
+.yarrow-stick.split-left{transform:translateX(-20px) rotate(-5deg);opacity:.7}
+.yarrow-stick.split-right{transform:translateX(20px) rotate(5deg);opacity:.7}
+.yarrow-stick.removed{opacity:.2;transform:scaleY(.3)}
+/* 逐爻构建 */
+.hex-build{display:flex;flex-direction:column-reverse;align-items:center;gap:6px;margin:20px 0}
+.hex-build .build-yao{display:flex;gap:8px;align-items:center;opacity:0;transform:scaleX(0);animation:yaoAppear .5s ease-out forwards}
+@keyframes yaoAppear{to{opacity:1;transform:scaleX(1)}}
+.build-yao .bar{height:8px;border-radius:2px;background:#e8c987;box-shadow:0 0 8px rgba(232,201,135,.4)}
+.build-yao.yang .bar{width:120px}
+.build-yao.yin .bar{width:52px}
+.build-yao.changing .bar{animation:yaoGlow 1s ease-in-out infinite alternate}
+@keyframes yaoGlow{from{box-shadow:0 0 4px rgba(232,201,135,.3)}to{box-shadow:0 0 16px rgba(232,201,135,.8)}}
+/* 日志（辅助） */
+.mini-log{font-size:12px;color:#6a5540;line-height:1.8;max-height:120px;overflow-y:auto;padding:10px;background:rgba(10,7,4,.4);border-radius:6px;margin-top:12px}
+.mini-log .biao{color:#c89a5a}
 
-  .taiji {
-    display: inline-block; width: 14px; height: 14px; border-radius: 50%;
-    background: conic-gradient(from 0deg, #f4e0b0, #f4e0b0 50%, #2a1810 50%);
-    margin-right: 6px; vertical-align: middle;
-  }
+/* ===== 揭晓特效 ===== */
+.reveal-overlay{position:fixed;inset:0;z-index:999;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.reveal-overlay.active{opacity:1;pointer-events:all}
+.reveal-text{font-size:64px;letter-spacing:20px;color:#e8c987;text-shadow:0 0 40px rgba(232,201,135,.6);animation:revealPulse 1.2s ease-out}
+@keyframes revealPulse{0%{transform:scale(.5);opacity:0}40%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
 
-  /* ========== 移动端适配（≤ 900px 或 触屏设备） ========== */
-  @media (max-width: 900px), (pointer: coarse) and (max-width: 1200px) {
-    html, body { padding: 0; }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background: radial-gradient(ellipse at top, #1a1410 0%, #0a0806 60%, #000 100%);
-      z-index: -1;
-    }
-    .wrap { max-width: 100%; padding: 12px 12px 32px; }
-    /* 刘海屏 / 底部横条安全区 */
-    .wrap {
-      padding-top: max(12px, env(safe-area-inset-top));
-      padding-bottom: max(32px, env(safe-area-inset-bottom));
-      padding-left: max(12px, env(safe-area-inset-left));
-      padding-right: max(12px, env(safe-area-inset-right));
-    }
+/* ===== 结果区 ===== */
+.result-section{display:none}
+.result-section.active{display:block}
+.hex-display{display:flex;justify-content:center;gap:48px;margin:32px 0;flex-wrap:wrap}
+.hex-box{text-align:center;min-width:180px;animation:hexReveal .8s ease-out both}
+@keyframes hexReveal{from{transform:scale(.6);opacity:0;filter:blur(4px)}to{transform:scale(1);opacity:1;filter:none}}
+.hex-name{font-size:22px;color:#e8c987;margin-bottom:6px;letter-spacing:4px;text-shadow:0 0 12px rgba(232,201,135,.4)}
+.hex-sub{font-size:12px;color:#8a7050;margin-bottom:14px;letter-spacing:2px}
+.hex-visual{display:inline-flex;flex-direction:column-reverse;gap:6px;padding:16px 24px;background:rgba(10,7,4,.5);border:1px solid rgba(107,74,43,.3);border-radius:8px}
+.yao{display:flex;justify-content:center;gap:10px;height:12px;align-items:center}
+.yao .bar{height:8px;border-radius:2px;background:linear-gradient(90deg,#c89a5a,#e8c987,#c89a5a)}
+.yao.yang .bar{width:140px}
+.yao.yin .bar{width:60px}
+.yao.changing{position:relative}
+.yao.changing::after{content:'✦';position:absolute;right:-20px;color:#ffd070;font-size:12px;animation:yaoGlow 1s infinite alternate}
 
-    /* 顶部标题：紧凑但保留仪式感 */
-    h1 {
-      font-size: 22px; letter-spacing: 6px; margin: 8px 0 2px;
-      text-shadow: 0 0 12px rgba(232,201,135,.6);
-    }
-    .subtitle { font-size: 11px; letter-spacing: 3px; margin-bottom: 14px; }
+/* ===== 解析区 ===== */
+.interpret{font-size:15px;line-height:1.9}
+.interpret .section-title{font-size:16px;color:#e8c987;letter-spacing:3px;margin:28px 0 12px;padding:10px 0 10px 14px;border-left:3px solid #c89a5a;background:linear-gradient(90deg,rgba(200,154,90,.08),transparent);opacity:0;animation:fadeSlide .5s ease-out forwards}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.interpret .yao-line{padding:10px 0;border-bottom:1px solid rgba(107,74,43,.2)}
+.interpret .yao-line .label{display:inline-block;min-width:72px;color:#c89a5a;font-size:13px;letter-spacing:2px;vertical-align:top}
+.interpret .yao-line .text{color:#b89968}
+.interpret .yao-line.plain{background:rgba(200,154,90,.05);border-radius:6px;padding:12px;border-bottom:none;margin:6px 0}
+.interpret .yao-line.plain .text{color:#d4b483}
+.interpret .yao-line.change{background:rgba(255,208,112,.05);border-radius:6px;padding:12px;border-bottom:none;margin:6px 0;border-left:2px solid #ffd070}
+.interpret .yao-line.advice{background:rgba(140,180,120,.05);border-radius:6px;padding:12px;border-bottom:none;margin:6px 0}
+.interpret .yao-line.advice .label{color:#a0c878}
+.interpret .plain-text{font-size:13px;color:#9a8060}
+.interpret b{color:#f4e0b0;font-weight:normal}
 
-    /* 卡片：贴边、圆角明显 */
-    .card {
-      padding: 14px 14px; margin-bottom: 12px; border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.6);
-    }
-    .card h2 {
-      font-size: 15px; letter-spacing: 3px; padding-bottom: 8px; margin-bottom: 10px;
-    }
-    .intro { font-size: 14px; line-height: 1.9; }
+/* 分类卡片 */
+.aspects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}
+.aspect-card{background:rgba(30,20,12,.6);border:1px solid rgba(107,74,43,.35);border-radius:10px;padding:16px;transition:all .3s;opacity:0;animation:fadeSlide .5s ease-out forwards}
+.aspect-card:hover{border-color:#c89a5a;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.aspect-icon{font-size:22px;margin-bottom:8px}
+.aspect-title{font-size:14px;color:#e8c987;letter-spacing:2px;margin-bottom:8px;border-bottom:1px dashed rgba(107,74,43,.3);padding-bottom:6px}
+.aspect-text{font-size:13px;color:#b89968;line-height:1.8}
 
-    /* 控制区：按钮撑满宽度 */
-    .controls { margin: 14px 0 6px; }
-    .question-input {
-      width: 100%; max-width: 100%; font-size: 15px; padding: 12px 14px;
-      letter-spacing: 1px; border-radius: 8px;
-    }
-    .question-input:focus { border-color: #e8c987; }
-    button {
-      display: block; width: 100%; padding: 14px 20px;
-      font-size: 16px; letter-spacing: 6px; margin: 8px 0;
-      border-radius: 10px; min-height: 48px;
-      -webkit-tap-highlight-color: rgba(200,150,80,.3);
-    }
-    button:active { transform: scale(0.98); }
+/* ===== 底部 ===== */
+.footer{text-align:center;margin-top:48px;font-size:12px;color:#4a3a28;letter-spacing:3px}
 
-    /* 过程日志 */
-    .process-area {
-      font-size: 13px; padding: 12px; line-height: 1.8;
-      max-height: 240px; border-radius: 8px;
-    }
-
-    /* 卦象：垂直堆叠、放大展示 */
-    .hex-display { flex-direction: column; gap: 24px; align-items: center; margin: 24px 0 10px; }
-    .hex-box {
-      min-width: auto; width: 100%; max-width: 100%;
-      background: rgba(20,14,8,.35);
-      border: 1px solid rgba(107,74,43,.4);
-      border-radius: 12px; padding: 16px 12px;
-    }
-    .hex-name { font-size: 20px; letter-spacing: 4px; margin-bottom: 8px; }
-    .hex-sub { font-size: 13px; letter-spacing: 1px; margin-bottom: 16px; }
-    .hex-visual {
-      padding: 16px; min-width: auto;
-      background: rgba(0,0,0,.35);
-    }
-    .yao { height: 16px; }
-    .yao .bar { height: 10px; }
-    .yao.yang .bar { width: 180px; }
-    .yao.yin .bar { width: 82px; }
-    .yao.yin { gap: 16px; }
-    .yao.changing::after { right: -22px; font-size: 14px; }
-
-    /* 解析：全宽卡片式 */
-    .interpret { font-size: 15px; line-height: 1.9; }
-    .interpret .label {
-      display: block; min-width: auto; margin-bottom: 4px;
-      font-size: 12px; letter-spacing: 3px;
-      opacity: .85;
-    }
-    .interpret .yao-line {
-      padding: 10px 4px; border-bottom: 1px solid rgba(107,74,43,.25);
-    }
-    .interpret .yao-line.plain,
-    .interpret .yao-line.change,
-    .interpret .yao-line.advice {
-      padding: 12px 10px; border-radius: 8px; margin: 8px 0;
-      border-bottom: none;
-    }
-    .interpret .section-title {
-      font-size: 15px; letter-spacing: 2px; margin: 18px 0 8px;
-      padding: 8px 0 8px 12px;
-      border-left-width: 4px;
-    }
-    .interpret .plain-text {
-      font-size: 14px; line-height: 1.9;
-    }
-    .interpret .text { display: block; }
-
-    .note { font-size: 11px; letter-spacing: 2px; margin-top: 24px; padding: 0 8px; }
-  }
-
-  /* ========== 超小屏（≤ 380px） ========== */
-  @media (max-width: 380px) {
-    h1 { font-size: 19px; letter-spacing: 3px; }
-    .card h2 { font-size: 14px; }
-    .yao.yang .bar { width: 150px; }
-    .yao.yin .bar { width: 66px; }
-    button { font-size: 15px; padding: 12px 16px; letter-spacing: 4px; }
-    .interpret { font-size: 14px; }
-    .interpret .plain-text { font-size: 13px; }
-  }
-
-  /* 触屏设备统一：去除hover上浮，改为按压效果 */
-  @media (pointer: coarse) {
-    button:hover { transform: none; }
-  }
+/* ===== 移动端 ===== */
+@media(max-width:600px){
+  .wrap{padding:24px 16px 48px}
+  h1{font-size:26px;letter-spacing:8px}
+  .taiji-wrap{width:70px;height:70px}
+  .taiji-svg{width:70px;height:70px}
+  .btn-divine{width:88px;height:88px;font-size:18px}
+  .hex-display{flex-direction:column;align-items:center;gap:24px}
+  .aspects-grid{grid-template-columns:1fr}
+  .yao.yang .bar{width:110px}
+  .yao.yin .bar{width:46px}
+  .build-yao.yang .bar{width:90px}
+  .build-yao.yin .bar{width:40px}
+  .reveal-text{font-size:42px;letter-spacing:12px}
+}
+@media(pointer:coarse){.btn-divine:hover{transform:none}.aspect-card:hover{transform:none}}
 </style>
 </head>
 <body>
+<!-- 粒子背景 -->
+<div class="particles" id="particles"></div>
+
 <div class="wrap">
-  <h1>蓍 草 占 卜</h1>
-  <div class="subtitle">— 大 衍 筮 法 · 十 八 变 成 卦 —</div>
-
-  <div class="card">
-    <h2><span class="taiji"></span>筮 法 简 介</h2>
-    <p class="intro">
-      蓍草占卜出自《周易·系辞》：<em>"大衍之数五十，其用四十有九。"</em>
-      取蓍草五十根，虚其一以象太极，实用四十九根。分二、挂一、揲四、归奇，
-      三变得一爻，十八变而成一卦。每爻数值老阳 <em>九</em>、少阳 <em>七</em>、
-      少阴 <em>八</em>、老阴 <em>六</em>；其中<em>老阳老阴</em>为动爻，动则生变卦。
-    </p>
+  <!-- 标题区 -->
+  <div class="title-area enter">
+    <div class="taiji-wrap">
+      <div class="taiji-ring"></div>
+      <div class="taiji-ring"></div>
+      <svg class="taiji-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="rgba(200,154,90,.4)" stroke-width="1"/><path d="M50,2 A48,48 0 0,1 50,98 A24,24 0 0,1 50,50 A24,24 0 0,0 50,2 Z" fill="#e8c987"/><path d="M50,2 A48,48 0 0,0 50,98 A24,24 0 0,0 50,50 A24,24 0 0,1 50,2 Z" fill="rgba(200,154,90,.15)"/><circle cx="50" cy="26" r="6" fill="#0a0806"/><circle cx="50" cy="74" r="6" fill="#e8c987"/></svg>
+    </div>
+    <h1>蓍 草 占 卜</h1>
+    <div class="subtitle" id="subtitle"></div>
   </div>
 
-  <div class="card">
-    <h2><span class="taiji"></span>心 诚 问 卦</h2>
-    <div class="controls">
-      <div style="margin-bottom:16px;">
-        <input class="question-input" id="question" placeholder="默念所问之事（可留空）" />
-      </div>
-      <button id="btnStart">起 卦</button>
-      <button id="btnReset">重 来</button>
-    </div>
-    <div class="process-area" id="process"></div>
+  <!-- 仪式区 -->
+  <div class="ceremony enter enter-d2">
+    <p class="guide-text">心诚则灵 · 静心三息 · <em>默念所问</em></p>
+    <input class="question-input" id="question" placeholder="所问之事（可留空）" />
+    <button class="btn-divine" id="btnStart">起卦<span class="ripple"></span></button>
+    <button class="btn-reset" id="btnReset">重 来</button>
   </div>
 
-  <div id="result" style="display:none;">
-    <div class="card">
-      <h2><span class="taiji"></span>卦 象 呈 现</h2>
-      <div class="hex-display" id="hexDisplay"></div>
+  <!-- 起卦过程 -->
+  <div class="process-section" id="processSection">
+    <div class="progress-wrap">
+      <div class="progress-text" id="progressText">第一变 / 共十八变</div>
+      <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
     </div>
-
-    <div class="card" id="interpretCard">
-      <h2><span class="taiji"></span>卦 辞 解 析</h2>
-      <div class="interpret" id="interpret"></div>
-    </div>
+    <div class="yarrow-viz" id="yarrowViz"></div>
+    <div class="hex-build" id="hexBuild"></div>
+    <div class="mini-log" id="miniLog"></div>
   </div>
 
-  <div class="note">— 卦以诚立 · 心动则应 · 仅供参悟 —</div>
+  <!-- 揭晓遮罩 -->
+  <div class="reveal-overlay" id="revealOverlay"><div class="reveal-text">卦 成</div></div>
+
+  <!-- 结果区 -->
+  <div class="result-section" id="resultSection">
+    <div class="hex-display" id="hexDisplay"></div>
+    <div class="interpret" id="interpret"></div>
+  </div>
+
+  <div class="footer enter enter-d4">— 天垂象 · 见吉凶 · 圣人则之 —</div>
 </div>
 
 <script>
-/* ========== 八经卦编号：下爻→中→上，二进制（阴0阳1） ========== */
-/* 乾7 兑6 离5 震4 巽3 坎2 艮1 坤0 */
-const TRIGRAM = { 7:'乾', 6:'兑', 5:'离', 4:'震', 3:'巽', 2:'坎', 1:'艮', 0:'坤' };
-const TRI_SYM = { 7:'☰', 6:'☱', 5:'☲', 4:'☳', 3:'☴', 2:'☵', 1:'☶', 0:'☷' };
+/* ========== 粒子初始化 ========== */
+(function initParticles(){
+  const c=document.getElementById('particles');
+  const n=window.innerWidth<600?12:22;
+  for(let i=0;i<n;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDuration=(8+Math.random()*12)+'s';
+    p.style.animationDelay=Math.random()*10+'s';
+    p.style.width=p.style.height=(1+Math.random()*2)+'px';
+    c.appendChild(p);
+  }
+})();
+/* ========== 打字机 ========== */
+(function typewriter(){
+  const el=document.getElementById('subtitle');
+  const text='大衍之数五十，其用四十有九';
+  let i=0;
+  el.innerHTML='<span class="cursor"></span>';
+  const iv=setInterval(()=>{
+    if(i<text.length){el.innerHTML=text.slice(0,++i)+'<span class="cursor"></span>';}
+    else{clearInterval(iv);setTimeout(()=>{el.innerHTML=text;},2000);}
+  },120);
+})();
 
-/* 下卦*8 + 上卦 → 周易卦序编号(1-64) */
-const HEX_MAP = {
-  [7*8+7]:1,  [0*8+0]:2,  [4*8+2]:3,  [2*8+1]:4,  [7*8+2]:5,  [2*8+7]:6,
-  [2*8+0]:7,  [0*8+2]:8,  [7*8+3]:9,  [6*8+7]:10, [7*8+0]:11, [0*8+7]:12,
-  [5*8+7]:13, [7*8+5]:14, [1*8+0]:15, [0*8+4]:16, [4*8+6]:17, [3*8+1]:18,
-  [6*8+0]:19, [0*8+3]:20, [4*8+5]:21, [5*8+1]:22, [0*8+1]:23, [4*8+0]:24,
-  [4*8+7]:25, [7*8+1]:26, [4*8+1]:27, [3*8+6]:28, [2*8+2]:29, [5*8+5]:30,
-  [1*8+6]:31, [3*8+4]:32, [1*8+7]:33, [7*8+4]:34, [0*8+5]:35, [5*8+0]:36,
-  [5*8+3]:37, [6*8+5]:38, [1*8+2]:39, [2*8+4]:40, [6*8+1]:41, [4*8+3]:42,
-  [7*8+6]:43, [3*8+7]:44, [0*8+6]:45, [3*8+0]:46, [2*8+6]:47, [3*8+2]:48,
-  [5*8+6]:49, [3*8+5]:50, [4*8+4]:51, [1*8+1]:52, [1*8+3]:53, [6*8+4]:54,
-  [5*8+4]:55, [1*8+5]:56, [3*8+3]:57, [6*8+6]:58, [3*8+2]:48, [2*8+3]:59,
-  [6*8+2]:60, [6*8+3]:61, [1*8+4]:62, [5*8+2]:63, [2*8+5]:64
+/* ========== 八经卦 ========== */
+const TRIGRAM={7:'乾',6:'兑',5:'离',4:'震',3:'巽',2:'坎',1:'艮',0:'坤'};
+const TRI_SYM={7:'☰',6:'☱',5:'☲',4:'☳',3:'☴',2:'☵',1:'☶',0:'☷'};
+const HEX_MAP={
+[7*8+7]:1,[0*8+0]:2,[4*8+2]:3,[2*8+1]:4,[7*8+2]:5,[2*8+7]:6,
+[2*8+0]:7,[0*8+2]:8,[7*8+3]:9,[6*8+7]:10,[7*8+0]:11,[0*8+7]:12,
+[5*8+7]:13,[7*8+5]:14,[1*8+0]:15,[0*8+4]:16,[4*8+6]:17,[3*8+1]:18,
+[6*8+0]:19,[0*8+3]:20,[4*8+5]:21,[5*8+1]:22,[0*8+1]:23,[4*8+0]:24,
+[4*8+7]:25,[7*8+1]:26,[4*8+1]:27,[3*8+6]:28,[2*8+2]:29,[5*8+5]:30,
+[1*8+6]:31,[3*8+4]:32,[1*8+7]:33,[7*8+4]:34,[0*8+5]:35,[5*8+0]:36,
+[5*8+3]:37,[6*8+5]:38,[1*8+2]:39,[2*8+4]:40,[6*8+1]:41,[4*8+3]:42,
+[7*8+6]:43,[3*8+7]:44,[0*8+6]:45,[3*8+0]:46,[2*8+6]:47,[3*8+2]:48,
+[5*8+6]:49,[3*8+5]:50,[4*8+4]:51,[1*8+1]:52,[1*8+3]:53,[6*8+4]:54,
+[5*8+4]:55,[1*8+5]:56,[3*8+3]:57,[6*8+6]:58,[3*8+2]:48,[2*8+3]:59,
+[6*8+2]:60,[6*8+3]:61,[1*8+4]:62,[5*8+2]:63,[2*8+5]:64
 };
 
 /* ========== 六十四卦数据 [卦名, 卦辞, 初爻, 二爻, 三爻, 四爻, 五爻, 上爻] ========== */
@@ -588,37 +448,13 @@ const GUA_ASPECTS = {
 64:{career:'事未成需谨慎，如小狐渡河濡尾则险；坚持正道终有转机',love:'事未成需谨慎，感情需坚持正道',health:'病未愈需谨慎，坚持调养终有转机',wealth:'财未成需谨慎，坚持正道终有转机'}
 };
 
-/* ========== 爻辞白话解读辅助规则 ========== */
-/* 通过关键字自动补充白话，尽量点破意思 */
+/* ========== 爻辞白话解读 ========== */
 function yaoPlain(text, position) {
-  const posName = ['第一步（初期）', '第二步（进入状态）', '第三步（中途转折）', '第四步（接近成功）', '第五步（鼎盛）', '第六步（终局或过头）'][position];
+  const posName = ['第一步（初期）','第二步（进入状态）','第三步（中途转折）','第四步（接近成功）','第五步（鼎盛）','第六步（终局或过头）'][position];
   let hint = [];
-  const rules = [
-    ['勿用', '按兵不动、暂不行动'],
-    ['利见大人', '有贵人可助，宜求见'],
-    ['利涉大川', '可以放手做大事、远行'],
-    ['利有攸往', '适宜前往、有所行动'],
-    ['利建侯', '适合选立主事之人'],
-    ['无咎', '不会有过错，安全'],
-    ['元吉', '大吉大利'],
-    ['贞吉', '守正道则吉'],
-    ['终吉', '最终会吉'],
-    ['贞凶', '固执下去有凶险'],
-    ['贞厉', '守着有危险'],
-    ['征凶', '出征前往会凶'],
-    ['凶', '不利、有凶险'],
-    ['吉', '顺遂'],
-    ['悔亡', '悔恨消散'],
-    ['有悔', '会有懊悔'],
-    ['吝', '会有困顿、遗憾'],
-    ['亨', '通达顺畅'],
-    ['有孚', '心怀诚信'],
-    ['厉', '有危险须警惕']
-  ];
-  rules.forEach(([k, v]) => { if (text.includes(k)) hint.push(v); });
-  // 去重
-  hint = [...new Set(hint)];
-  return { position: posName, hints: hint };
+  const rules = [['勿用','按兵不动、暂不行动'],['利见大人','有贵人可助，宜求见'],['利涉大川','可以放手做大事、远行'],['利有攸往','适宜前往、有所行动'],['利建侯','适合选立主事之人'],['无咎','不会有过错，安全'],['元吉','大吉大利'],['贞吉','守正道则吉'],['终吉','最终会吉'],['贞凶','固执下去有凶险'],['贞厉','守着有危险'],['征凶','出征前往会凶'],['凶','不利、有凶险'],['吉','顺遂'],['悔亡','悔恨消散'],['有悔','会有懊悔'],['吝','会有困顿、遗憾'],['亨','通达顺畅'],['有孚','心怀诚信'],['厉','有危险须警惕']];
+  rules.forEach(([k,v])=>{if(text.includes(k))hint.push(v);});
+  return {position:posName,hints:[...new Set(hint)]};
 }
 
 /* ========== 综合建议：根据动爻数量、卦意生成 ========== */
@@ -681,75 +517,94 @@ function oneYao() {
   return { num, changes, remain: total };
 }
 
-/* ========== 起卦 ========== */
+/* ========== 起卦（动画版） ========== */
+const CN_NUM=['一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八'];
 async function divine() {
-  const procEl = document.getElementById('process');
-  const resEl = document.getElementById('result');
-  const hexEl = document.getElementById('hexDisplay');
-  const interpretEl = document.getElementById('interpret');
-  procEl.innerHTML = '';
-  resEl.style.display = 'none';
-  hexEl.innerHTML = '';
-  interpretEl.innerHTML = '';
-
-  const btn = document.getElementById('btnStart');
-  btn.disabled = true;
-
-  const q = document.getElementById('question').value.trim();
-  if (q) log(`所问：<span class="biao">${escapeHtml(q)}</span>`);
+  const procSec=document.getElementById('processSection');
+  const resSec=document.getElementById('resultSection');
+  const vizEl=document.getElementById('yarrowViz');
+  const buildEl=document.getElementById('hexBuild');
+  const logEl=document.getElementById('miniLog');
+  const progText=document.getElementById('progressText');
+  const progFill=document.getElementById('progressFill');
+  const btn=document.getElementById('btnStart');
+  procSec.classList.add('active');
+  resSec.classList.remove('active');
+  vizEl.innerHTML='';buildEl.innerHTML='';logEl.innerHTML='';
+  btn.disabled=true;
+  const q=document.getElementById('question').value.trim();
+  if(q)log(`所问：<span class="biao">${escapeHtml(q)}</span>`);
   log('取蓍草五十，去一以象太极，其用四十有九。');
-  await sleep(400);
-
-  const yaos = [];  // 从下往上：初、二、三、四、五、上
-  const names = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
-  for (let i = 0; i < 6; i++) {
-    const y = oneYao();
-    yaos.push(y.num);
-    const label = { 6:'老阴 ▬▬  ▬▬ 动', 7:'少阳 ▬▬▬▬▬', 8:'少阴 ▬▬  ▬▬', 9:'老阳 ▬▬▬▬▬ 动' }[y.num];
-    log(`第 ${i+1} 爻（${names[i]}）三变余数 [${y.changes.join(',')}]，得 <span class="biao">${y.num} · ${label}</span>`);
-    await sleep(500);
-    renderProgress(yaos);
+  // 初始显示49根蓍草
+  for(let i=0;i<49;i++){const s=document.createElement('div');s.className='yarrow-stick';vizEl.appendChild(s);}
+  await sleep(600);
+  const yaos=[];const names=['初爻','二爻','三爻','四爻','五爻','上爻'];
+  let changeCount=0;
+  for(let i=0;i<6;i++){
+    let total=49;const changes=[];
+    for(let c=0;c<3;c++){
+      changeCount++;
+      progText.textContent=`第${CN_NUM[changeCount-1]}变 / 共十八变`;
+      progFill.style.width=(changeCount/18*100)+'%';
+      // 动画：蓍草分开
+      const sticks=vizEl.children;
+      const splitPt=Math.floor(Math.random()*(total-2))+1;
+      for(let s=0;s<sticks.length;s++){
+        sticks[s].classList.remove('split-left','split-right','removed');
+        if(s<total){
+          if(s<splitPt)sticks[s].classList.add('split-left');
+          else sticks[s].classList.add('split-right');
+        }else sticks[s].classList.add('removed');
+      }
+      await sleep(350);
+      const oc=oneChange(total);
+      changes.push(oc.used);
+      total=oc.remain;
+      // 动画：移除用过的
+      for(let s=total;s<49;s++){if(sticks[s])sticks[s].classList.add('removed');}
+      await sleep(250);
+    }
+    const num=total/4;
+    yaos.push(num);
+    const label={6:'老阴 ▬▬  ▬▬ 动',7:'少阳 ▬▬▬▬▬',8:'少阴 ▬▬  ▬▬',9:'老阳 ▬▬▬▬▬ 动'}[num];
+    log(`第${i+1}爻（${names[i]}）得 <span class="biao">${num} · ${label}</span>`);
+    // 逐爻构建卦象
+    const yaoDiv=document.createElement('div');
+    const isYang=(num===7||num===9);
+    const isChanging=(num===6||num===9);
+    yaoDiv.className='build-yao '+(isYang?'yang':'yin')+(isChanging?' changing':'');
+    yaoDiv.style.animationDelay='0s';
+    if(isYang){yaoDiv.innerHTML='<div class="bar"></div>';}
+    else{yaoDiv.innerHTML='<div class="bar"></div><div class="bar"></div>';}
+    buildEl.appendChild(yaoDiv);
+    await sleep(400);
   }
-
-  await sleep(400);
-  const benGua = yaos.map(n => (n === 7 || n === 9) ? 1 : 0);   // 本卦
-  const bianGua = yaos.map(n => n === 9 ? 0 : (n === 6 ? 1 : ((n === 7) ? 1 : 0))); // 变卦
-  const changingIdx = yaos.map((n, i) => (n === 6 || n === 9) ? i : -1).filter(i => i >= 0);
-
-  const benId = hexIdFromYaos(benGua);
-  log(`成卦：本卦 <span class="biao">${GUA[benId][0]}</span>`);
-
-  let bianId = null;
-  if (changingIdx.length > 0) {
-    bianId = hexIdFromYaos(bianGua);
-    log(`动爻：<span class="biao">${changingIdx.map(i => names[i]).join('、')}</span>，变卦 <span class="biao">${GUA[bianId][0]}</span>`);
-  } else {
-    log('无动爻，静卦。');
-  }
-
-  renderHex(yaos, changingIdx, benId, bianId);
-  renderInterpret(yaos, changingIdx, benId, bianId);
-  document.getElementById('result').style.display = 'block';
-  btn.disabled = false;
-
-  function log(txt) {
-    const div = document.createElement('div');
-    div.className = 'step';
-    div.innerHTML = txt;
-    procEl.appendChild(div);
-    procEl.scrollTop = procEl.scrollHeight;
-  }
+  await sleep(500);
+  // 揭晓特效
+  const overlay=document.getElementById('revealOverlay');
+  overlay.classList.add('active');
+  await sleep(1400);
+  overlay.classList.remove('active');
+  await sleep(300);
+  // 显示结果
+  const benGua=yaos.map(n=>(n===7||n===9)?1:0);
+  const bianGua=yaos.map(n=>n===9?0:(n===6?1:((n===7)?1:0)));
+  const changingIdx=yaos.map((n,i)=>(n===6||n===9)?i:-1).filter(i=>i>=0);
+  const benId=hexIdFromYaos(benGua);
+  let bianId=null;
+  if(changingIdx.length>0){bianId=hexIdFromYaos(bianGua);log(`变卦 <span class="biao">${GUA[bianId][0]}</span>`);}
+  renderHex(yaos,changingIdx,benId,bianId);
+  renderInterpret(yaos,changingIdx,benId,bianId);
+  procSec.classList.remove('active');
+  resSec.classList.add('active');
+  btn.disabled=false;
+  function log(txt){const d=document.createElement('div');d.innerHTML=txt;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}
 }
 
 function hexIdFromYaos(bits) {
-  // bits: 初→上
   const lower = bits[0] + bits[1] * 2 + bits[2] * 4;
   const upper = bits[3] + bits[4] * 2 + bits[5] * 4;
   return HEX_MAP[lower * 8 + upper];
-}
-
-function renderProgress(yaos) {
-  // 边生成边预览
 }
 
 function renderHex(yaos, changingIdx, benId, bianId) {
@@ -775,7 +630,7 @@ function makeHexBox(title, bits, changingIdx, gid) {
   }).join('');
   box.innerHTML = `
     <div class="hex-name">${title}：${g[0]}</div>
-    <div class="hex-sub">${TRI_SYM[upper]} ${TRIGRAM[upper]}上 · ${TRIGRAM[lower]}下 ${TRI_SYM[lower]}　（第 ${gid} 卦）</div>
+    <div class="hex-sub">${TRI_SYM[upper]} ${TRIGRAM[upper]}上 · ${TRIGRAM[lower]}下 ${TRI_SYM[lower]}（第 ${gid} 卦）</div>
     <div class="hex-visual">${yaosHtml}</div>
   `;
   return box;
@@ -901,6 +756,9 @@ function renderInterpret(yaos, changingIdx, benId, bianId) {
   }
 
   el.innerHTML = html;
+  // 逐段淡入动画
+  el.querySelectorAll('.section-title').forEach((t,i)=>{t.style.animationDelay=(i*0.3)+'s';});
+  el.querySelectorAll('.aspect-card').forEach((c,i)=>{c.style.animationDelay=(0.5+i*0.15)+'s';});
 }
 
 /* 根据本卦→变卦生成过渡注意事项 */
@@ -960,9 +818,13 @@ function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&l
 
 document.getElementById('btnStart').addEventListener('click', divine);
 document.getElementById('btnReset').addEventListener('click', () => {
-  document.getElementById('process').innerHTML = '';
-  document.getElementById('result').style.display = 'none';
+  document.getElementById('processSection').classList.remove('active');
+  document.getElementById('resultSection').classList.remove('active');
   document.getElementById('question').value = '';
+  document.getElementById('yarrowViz').innerHTML = '';
+  document.getElementById('hexBuild').innerHTML = '';
+  document.getElementById('miniLog').innerHTML = '';
+  document.getElementById('progressFill').style.width = '0';
 });
 </script>
 </body>
