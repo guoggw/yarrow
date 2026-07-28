@@ -80,7 +80,7 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 @keyframes yaoAppear{to{opacity:1;transform:scaleX(1)}}
 .build-yao .bar{height:8px;border-radius:2px;background:#e8c987;box-shadow:0 0 8px rgba(232,201,135,.4)}
 .build-yao.yang .bar{width:120px}
-.build-yao.yin .bar{width:52px}
+.build-yao.yin .bar{width:56px}
 .build-yao.changing .bar{animation:yaoGlow 1s ease-in-out infinite alternate}
 @keyframes yaoGlow{from{box-shadow:0 0 4px rgba(232,201,135,.3)}to{box-shadow:0 0 16px rgba(232,201,135,.8)}}
 /* 日志（辅助） */
@@ -107,7 +107,7 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .yao{display:flex;justify-content:center;gap:10px;height:12px;align-items:center}
 .yao .bar{height:8px;border-radius:2px;background:linear-gradient(90deg,#c89a5a,#e8c987,#c89a5a)}
 .yao.yang .bar{width:140px}
-.yao.yin .bar{width:60px}
+.yao.yin .bar{width:65px}
 .yao.changing{position:relative}
 .yao.changing::after{content:'✦';position:absolute;right:-20px;color:#ffd070;font-size:12px;animation:yaoGlow 1s infinite alternate}
 
@@ -115,16 +115,26 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .interpret{font-size:15px;line-height:1.9}
 .interpret .section-title{font-size:16px;color:#e8c987;letter-spacing:3px;margin:28px 0 12px;padding:10px 0 10px 14px;border-left:3px solid #c89a5a;background:linear-gradient(90deg,rgba(200,154,90,.08),transparent);opacity:0;animation:fadeSlide .5s ease-out forwards}
 @keyframes fadeSlide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
-.interpret .yao-line{padding:10px 0;border-bottom:1px solid rgba(107,74,43,.2)}
-.interpret .yao-line .label{display:inline-block;min-width:72px;color:#c89a5a;font-size:13px;letter-spacing:2px;vertical-align:top}
-.interpret .yao-line .text{color:#b89968}
-.interpret .yao-line.plain{background:rgba(200,154,90,.05);border-radius:6px;padding:12px;border-bottom:none;margin:6px 0}
-.interpret .yao-line.plain .text{color:#d4b483}
-.interpret .yao-line.change{background:rgba(255,208,112,.05);border-radius:6px;padding:12px;border-bottom:none;margin:6px 0;border-left:2px solid #ffd070}
-.interpret .yao-line.advice{background:rgba(140,180,120,.05);border-radius:6px;padding:12px;border-bottom:none;margin:6px 0}
-.interpret .yao-line.advice .label{color:#a0c878}
-.interpret .plain-text{font-size:13px;color:#9a8060}
 .interpret b{color:#f4e0b0;font-weight:normal}
+/* 天机总览（结论前置） */
+.tianji{text-align:center;padding:32px 20px 28px;margin:8px 0 8px;background:radial-gradient(ellipse at 50% 0%,rgba(200,154,90,.12),transparent 70%);border:1px solid rgba(200,154,90,.25);border-radius:12px;animation:hexReveal .8s ease-out both}
+.tianji-question{font-size:13px;color:#8a7050;letter-spacing:2px;margin-bottom:16px}
+.tianji-question b{color:#c89a5a}
+.tianji-verdict{font-size:30px;letter-spacing:8px;font-weight:bold;margin-bottom:14px;text-shadow:0 0 24px currentColor,0 0 48px currentColor}
+.tianji-line{font-size:16px;color:#d4b483;letter-spacing:2px;line-height:1.8}
+.tianji-line .qmark{color:#c89a5a}
+/* 叙事段落（大师口吻） */
+.narrative{padding:4px 0 4px 16px;margin:8px 0 18px;border-left:2px solid rgba(200,154,90,.35)}
+.narr-lead{font-size:14px;color:#c89a5a;letter-spacing:1px;margin-bottom:6px}
+.narr-main{font-size:15px;color:#d4b483;line-height:1.9}
+.narrative.advice{border-left-color:rgba(160,200,120,.5);background:rgba(140,180,120,.05);border-radius:0 8px 8px 0;padding:14px 16px}
+.narrative.advice .narr-main{color:#cfe0b8}
+.quote{font-size:12px;color:#6a5540;line-height:1.7;margin-top:8px;padding:6px 10px;background:rgba(10,7,4,.4);border-left:2px solid rgba(107,74,43,.4);border-radius:0 4px 4px 0}
+.quote::before{content:'原文 · ';color:#8a6a45}
+/* 四维详解引导语 */
+.aspects-intro{font-size:13px;color:#9a8060;line-height:1.8;margin-bottom:12px;padding:8px 12px;background:rgba(20,14,8,.4);border-radius:6px}
+/* 占法脚注 */
+.footnote{font-size:12px;color:#5a4832;line-height:1.7;margin-top:28px;padding-top:14px;border-top:1px dashed rgba(107,74,43,.3)}
 
 /* 分类卡片 */
 .aspects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}
@@ -147,9 +157,9 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
   .hex-display{flex-direction:column;align-items:center;gap:24px}
   .aspects-grid{grid-template-columns:1fr}
   .yao.yang .bar{width:110px}
-  .yao.yin .bar{width:46px}
+  .yao.yin .bar{width:50px}
   .build-yao.yang .bar{width:90px}
-  .build-yao.yin .bar{width:40px}
+  .build-yao.yin .bar{width:41px}
   .reveal-text{font-size:42px;letter-spacing:12px}
 }
 @media(pointer:coarse){.btn-divine:hover{transform:none}.aspect-card:hover{transform:none}}
@@ -597,7 +607,7 @@ async function divine() {
   let bianId=null;
   if(changingIdx.length>0){bianId=hexIdFromYaos(bianGua);log(`变卦 <span class="biao">${GUA[bianId][0]}</span>`);}
   renderHex(yaos,changingIdx,benId,bianId);
-  renderInterpret(yaos,changingIdx,benId,bianId);
+  renderInterpret(yaos,changingIdx,benId,bianId,q);
   procSec.classList.remove('active');
   resSec.classList.add('active');
   btn.disabled=false;
@@ -642,78 +652,59 @@ function makeHexBox(title, bits, changingIdx, gid) {
   return box;
 }
 
-function renderInterpret(yaos, changingIdx, benId, bianId) {
+function renderInterpret(yaos, changingIdx, benId, bianId, question) {
   const el = document.getElementById('interpret');
   const g = GUA[benId];
   const yaoNames = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
   const nChange = changingIdx.length;
   let html = '';
 
-  // 本卦
-  html += `<div class="section-title">◆ 本卦 · ${g[0]}（第${benId}卦）</div>`;
-  html += `<div class="yao-line"><span class="label">卦辞原文</span><span class="text">${g[1]}</span></div>`;
-  html += `<div class="yao-line plain"><span class="label">白话卦意</span><span class="text">${GUA_TIP[benId] || ''}</span></div>`;
-  
-  // 分类解释（事业/爱情/健康/财运）
-  const aspects = GUA_ASPECTS[benId];
-  if (aspects) {
-    html += `<div class="section-title">◆ 分 类 解 释</div>`;
-    html += `<div class="aspects-grid">
-      <div class="aspect-card">
-        <div class="aspect-icon">💼</div>
-        <div class="aspect-title">事 业</div>
-        <div class="aspect-text">${aspects.career}</div>
-      </div>
-      <div class="aspect-card">
-        <div class="aspect-icon">❤️</div>
-        <div class="aspect-title">爱 情</div>
-        <div class="aspect-text">${aspects.love}</div>
-      </div>
-      <div class="aspect-card">
-        <div class="aspect-icon">🏥</div>
-        <div class="aspect-title">健 康</div>
-        <div class="aspect-text">${aspects.health}</div>
-      </div>
-      <div class="aspect-card">
-        <div class="aspect-icon">💰</div>
-        <div class="aspect-title">财 运</div>
-        <div class="aspect-text">${aspects.wealth}</div>
-      </div>
-    </div>`;
-  }
+  // ===== 1. 天机总览（结论前置）=====
+  const s = summarize(g[1], nChange > 0 && nChange < 6 ? changingIdx.map(i => g[i + 2]).join('；') : g[1], bianId ? GUA[bianId][1] : '');
+  const tip = GUA_TIP[benId] || '';
+  const firstSentence = tip.split(/[。！？]/)[0];
+  html += `<div class="tianji">`;
+  if (question) html += `<div class="tianji-question">你为 <b>「${escapeHtml(question)}」</b> 而问</div>`;
+  html += `<div class="tianji-verdict" style="color:${s.color}">${s.label}</div>`;
+  if (firstSentence) html += `<div class="tianji-line"><span class="qmark">「</span>${firstSentence}<span class="qmark">」</span></div>`;
+  html += `</div>`;
 
-  // 动爻辞（本卦）
+  // ===== 2. 现状 · 本卦 =====
+  html += `<div class="section-title">◆ 现 状 · 你正处在「${g[0]}」的格局</div>`;
+  html += `<div class="narrative">
+    <div class="narr-main">${tip}</div>
+    <div class="quote">${g[1]}</div>
+  </div>`;
+
+  // ===== 3. 转折 · 动爻 =====
   if (nChange > 0 && nChange < 6) {
-    html += `<div class="section-title">◆ 动 爻（重点）</div>`;
+    html += `<div class="section-title">◆ 转 折 · 变化正在发生</div>`;
     changingIdx.forEach(i => {
       const p = yaoPlain(g[i + 2], i);
       const yaoNum = yaos[i];
-      const yaoLabel = yaoNum === 9 ? '老阳变' : '老阴变';
-      html += `<div class="yao-line change">
-        <span class="label">${yaoNames[i]} ✦</span>
-        <span class="text"><b>${g[i + 2]}</b><br>
-          <span class="plain-text">🔍 ${p.position}：${p.hints.length ? p.hints.join('；') : '按爻辞字面意思体会'}（${yaoLabel}）</span>
-        </span>
+      const yaoLabel = yaoNum === 9 ? '老阳动' : '老阴动';
+      html += `<div class="narrative">
+        <div class="narr-lead">✦ 变化出现在第${['一','二','三','四','五','六'][i]}步（${yaoNames[i]} · ${yaoLabel}）</div>
+        <div class="narr-main">${p.position}——${p.hints.length ? p.hints.join('；') : '按爻辞字面意思体会'}</div>
+        <div class="quote">${g[i + 2]}</div>
       </div>`;
     });
   }
 
-  // 变卦
+  // ===== 4. 趋向 · 变卦 =====
   if (bianId && nChange > 0) {
-    html += `<div class="section-title">◆ 变卦 · ${GUA[bianId][0]}（第${bianId}卦）— 事态发展方向</div>`;
-    html += `<div class="yao-line"><span class="label">卦辞原文</span><span class="text">${GUA[bianId][1]}</span></div>`;
-    html += `<div class="yao-line plain"><span class="label">白话卦意</span><span class="text">${GUA_TIP[bianId] || ''}</span></div>`;
+    html += `<div class="section-title">◆ 趋 向 · 事态将转向「${GUA[bianId][0]}」</div>`;
+    html += `<div class="narrative">
+      <div class="narr-main">${GUA_TIP[bianId] || ''}</div>
+      <div class="quote">${GUA[bianId][1]}</div>
+    </div>`;
   }
 
-  // 综合断语
-  html += `<div class="section-title">◆ 综 合 断 语</div>`;
-  html += `<div class="yao-line advice"><span class="label">占法</span><span class="text">${makeAdvice(nChange, benId, bianId, changingIdx)}</span></div>`;
+  // ===== 5. 锦囊 · 给你的建议 =====
+  html += `<div class="section-title">◆ 锦 囊 · 给你的建议</div>`;
+  html += `<div class="narrative advice"><div class="narr-main">${s.advice}</div></div>`;
 
-  // 通用总结：吉凶方向
-  const summary = summarize(g[1], nChange > 0 && nChange < 6 ? changingIdx.map(i => g[i + 2]).join('；') : g[1], bianId ? GUA[bianId][1] : '');
-  html += `<div class="yao-line advice"><span class="label">吉凶倾向</span><span class="text">${summary}</span></div>`;
-
-  // 分类断语（事业/爱情/健康/财运）
+  // ===== 6. 四维详解（合并后的一套分类卡片）=====
   const benAsp = GUA_ASPECTS[benId];
   const bianAsp = (bianId && nChange > 0) ? GUA_ASPECTS[bianId] : null;
   if (benAsp) {
@@ -723,12 +714,9 @@ function renderInterpret(yaos, changingIdx, benId, bianId) {
       { key: 'health', icon: '🏥', title: '健康' },
       { key: 'wealth', icon: '💰', title: '财运' }
     ];
-    html += `<div class="section-title">◆ 分 类 断 语</div>`;
+    html += `<div class="section-title">◆ 四 维 详 解</div>`;
     if (bianAsp) {
-      // 有变卦：本卦→变卦→注意
-      html += `<div style="font-size:13px;color:#9a8060;line-height:1.8;margin-bottom:12px;padding:8px 12px;background:rgba(20,14,8,.4);border-radius:6px;">`; 
-      html += `当前处于<b style="color:#e8c987">「${GUA[benId][0]}」</b>的状态，事态将向<b style="color:#e8c987">「${GUA[bianId][0]}」</b>方向发展。以下为各方面的具体解读：`;
-      html += `</div>`;
+      html += `<div class="aspects-intro">当前处于<b style="color:#e8c987">「${GUA[benId][0]}」</b>，事态将向<b style="color:#e8c987">「${GUA[bianId][0]}」</b>方向发展，各方面具体如下：</div>`;
       html += `<div class="aspects-grid">`;
       aspectLabels.forEach(a => {
         html += `<div class="aspect-card">
@@ -743,12 +731,9 @@ function renderInterpret(yaos, changingIdx, benId, bianId) {
       });
       html += `</div>`;
     } else {
-      // 静卦或六爻皆变：只看本卦/变卦
       const aspSource = (nChange === 6 && bianAsp) ? bianAsp : benAsp;
       const aspTitle = (nChange === 6 && bianAsp) ? `六爻皆变，以变卦「${GUA[bianId][0]}」为主` : `静卦，以本卦「${GUA[benId][0]}」为主`;
-      html += `<div style="font-size:13px;color:#9a8060;line-height:1.8;margin-bottom:12px;padding:8px 12px;background:rgba(20,14,8,.4);border-radius:6px;">`;
-      html += `${aspTitle}，各方面解读如下：`;
-      html += `</div>`;
+      html += `<div class="aspects-intro">${aspTitle}，各方面解读如下：</div>`;
       html += `<div class="aspects-grid">`;
       aspectLabels.forEach(a => {
         html += `<div class="aspect-card">
@@ -760,6 +745,9 @@ function renderInterpret(yaos, changingIdx, benId, bianId) {
       html += `</div>`;
     }
   }
+
+  // ===== 7. 占法脚注 =====
+  html += `<div class="footnote">占法说明：${makeAdvice(nChange, benId, bianId, changingIdx).replace(/<[^>]+>/g, '')} 以上解读基于《周易》大衍筮法，仅供参悟。</div>`;
 
   el.innerHTML = html;
   // 逐段淡入动画
@@ -812,11 +800,11 @@ function summarize(benText, focusText, bianText) {
     return s;
   };
   const total = score(benText) + score(focusText) * 2 + score(bianText);
-  if (total >= 6) return '<b style="color:#ffd070">大吉 ☀</b>：整体走势顺遂，可积极行动。';
-  if (total >= 2) return '<b style="color:#c4d97a">偏吉 ✿</b>：总体有利，但需守正道、勿妄动。';
-  if (total >= -1) return '<b style="color:#a89880">平和 ○</b>：不吉不凶，看具体行事细节，宜谨慎稳妥。';
-  if (total >= -4) return '<b style="color:#e89060">偏凶 ⚠</b>：阻力较大，宜退守、忍耐、少作变动。';
-  return '<b style="color:#ff6b3d">凶险 ✕</b>：形势不利，宜停下审视，切勿冒进。';
+  if (total >= 6) return {label:'大吉 ☀', color:'#ffd070', advice:'整体走势顺遂，可积极行动。'};
+  if (total >= 2) return {label:'偏吉 ✿', color:'#c4d97a', advice:'总体有利，但需守正道、勿妄动。'};
+  if (total >= -1) return {label:'平和 ○', color:'#a89880', advice:'不吉不凶，看具体行事细节，宜谨慎稳妥。'};
+  if (total >= -4) return {label:'偏凶 ⚠', color:'#e89060', advice:'阻力较大，宜退守、忍耐、少作变动。'};
+  return {label:'凶险 ✕', color:'#ff6b3d', advice:'形势不利，宜停下审视，切勿冒进。'};
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
