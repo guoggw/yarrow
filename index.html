@@ -58,6 +58,14 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .btn-divine:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .btn-divine .ripple{position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(200,154,90,.5);animation:rippleOut 1.5s ease-out infinite}
 @keyframes rippleOut{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.6);opacity:0}}
+/* 起卦施法中：旋转法环+呼吸光晕+流光文字 */
+.btn-divine:disabled.divining{opacity:1;cursor:default;transform:none;animation:btnBreathe 2s ease-in-out infinite}
+@keyframes btnBreathe{0%,100%{box-shadow:0 4px 24px rgba(0,0,0,.6),0 0 16px rgba(255,208,112,.2)}50%{box-shadow:0 4px 24px rgba(0,0,0,.6),0 0 42px rgba(255,208,112,.6)}}
+.btn-divine:disabled.divining::before{content:'';position:absolute;inset:-9px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0deg,rgba(255,208,112,.95) 70deg,transparent 140deg,transparent 180deg,rgba(255,208,112,.55) 250deg,transparent 320deg);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#fff calc(100% - 2.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#fff calc(100% - 2.5px));animation:icoSpin 2.2s linear infinite;pointer-events:none}
+.btn-divine:disabled.divining::after{content:'';position:absolute;inset:-16px;border-radius:50%;border:1px solid rgba(255,208,112,.3);animation:divineHalo 1.8s ease-in-out infinite;pointer-events:none}
+@keyframes divineHalo{0%,100%{transform:scale(.9);opacity:.15}50%{transform:scale(1.05);opacity:.6}}
+.btn-divine .btn-txt{font-size:15px;letter-spacing:2px;background:linear-gradient(100deg,#c89a5a 20%,#ffe9b8 40%,#fffbe8 50%,#ffe9b8 60%,#c89a5a 80%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:txtShimmer 2.4s linear infinite}
+@keyframes txtShimmer{to{background-position:-250% 0}}
 
 /* ===== 起卦过程 ===== */
 .process-section{display:none;margin-bottom:40px}
@@ -759,7 +767,8 @@ async function divine() {
   vizEl.innerHTML='';buildEl.innerHTML='<div class="build-aura" id="buildAura"></div>';logEl.innerHTML='';
   const auraEl=document.getElementById('buildAura');
   btn.disabled=true;
-  btn.innerHTML='凝神静气…';
+  btn.classList.add('divining');
+  btn.innerHTML='<span class="btn-txt">凝神静气…</span>';
   sfx.unlock();
   document.getElementById('particles').classList.add('dense');
   const q=document.getElementById('question').value.trim();
@@ -889,6 +898,7 @@ async function divine() {
   document.getElementById('particles').classList.remove('dense');
   auraEl.style.opacity=0;
   btn.disabled=false;
+  btn.classList.remove('divining');
   btn.innerHTML='起卦<span class="ripple"></span>';
   function log(txt){const d=document.createElement('div');d.innerHTML=txt;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}
 }
