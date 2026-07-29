@@ -113,7 +113,8 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .yao.yang .bar{width:140px}
 .yao.yin .bar{width:65px}
 .yao.changing{position:relative}
-.yao.changing::after{content:'✦';position:absolute;right:-20px;color:#ffd070;font-size:12px;animation:yaoGlow 1s infinite alternate}
+.yao.changing::after{content:'';position:absolute;right:-21px;top:50%;transform:translateY(-50%);width:11px;height:11px;background:linear-gradient(135deg,#ffe9b8,#ffc860);clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);animation:starGlow 1.1s ease-in-out infinite alternate}
+@keyframes starGlow{from{filter:drop-shadow(0 0 2px rgba(255,208,112,.35))}to{filter:drop-shadow(0 0 8px rgba(255,208,112,.9))}}
 
 /* ===== 解析区 ===== */
 .interpret{font-size:15px;line-height:1.9}
@@ -130,6 +131,7 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 /* 叙事段落（大师口吻） */
 .narrative{padding:4px 0 4px 16px;margin:8px 0 18px;border-left:2px solid rgba(200,154,90,.35)}
 .narr-lead{font-size:14px;color:#c89a5a;letter-spacing:1px;margin-bottom:6px}
+.narr-lead .narr-star{display:inline-block;width:9px;height:9px;margin-right:7px;vertical-align:0;background:linear-gradient(135deg,#ffe9b8,#ffc860);clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);filter:drop-shadow(0 0 4px rgba(255,208,112,.55))}
 .narr-main{font-size:15px;color:#d4b483;line-height:1.9}
 .narrative.advice{border-left-color:rgba(160,200,120,.5);background:rgba(140,180,120,.05);border-radius:0 8px 8px 0;padding:14px 16px}
 .narrative.advice .narr-main{color:#cfe0b8}
@@ -231,6 +233,7 @@ body.locked{overflow:hidden}
 .build-aura{position:absolute;left:50%;top:50%;width:240px;height:240px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(232,201,135,.4) 0%,rgba(200,154,90,.14) 40%,transparent 70%);border-radius:50%;opacity:0;transition:opacity .6s ease;pointer-events:none;z-index:-1;filter:blur(8px)}
 /* 动爻角标 */
 .build-yao .dong-badge{position:absolute;right:-38px;top:50%;transform:translateY(-50%) scale(0);font-size:11px;color:#ffd070;letter-spacing:1px;white-space:nowrap;animation:badgePop .5s cubic-bezier(.34,1.56,.64,1) .15s forwards;text-shadow:0 0 8px rgba(255,208,112,.6)}
+.build-yao .dong-badge .mini-star{display:inline-block;width:9px;height:9px;margin-left:4px;vertical-align:-1px;background:linear-gradient(135deg,#ffe9b8,#ffc860);clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);filter:drop-shadow(0 0 5px rgba(255,208,112,.7))}
 @keyframes badgePop{0%{transform:translateY(-50%) scale(0)}70%{transform:translateY(-50%) scale(1.25)}100%{transform:translateY(-50%) scale(1)}}
 /* 全屏脉动 */
 .flash-overlay{position:fixed;inset:0;z-index:997;pointer-events:none;background:radial-gradient(circle,rgba(255,224,160,.9),rgba(255,208,112,.4));opacity:0}
@@ -846,7 +849,7 @@ async function divine() {
     yaoDiv.style.animationDelay='0s';
     if(isYang){yaoDiv.innerHTML='<div class="bar"></div>';}
     else{yaoDiv.innerHTML='<div class="bar"></div><div class="bar"></div>';}
-    if(isChanging)yaoDiv.innerHTML+='<span class="dong-badge">动 ✦</span>';
+    if(isChanging)yaoDiv.innerHTML+='<span class="dong-badge">动<i class="mini-star"></i></span>';
     buildEl.appendChild(yaoDiv);
     // 落定瞬间：火花 + 圆环 + 钟声 + 进度里程碑脉冲
     const[yx,yy]=fxCenter(yaoDiv);
@@ -1000,7 +1003,7 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
         ? `爻辞的意思是：${p.hints.join('；')}。`
         : '此爻辞需结合你所问之事细细体会。';
       html += `<div class="narrative sr">
-        <div class="narr-lead">✦ 变化出现在第${['一','二','三','四','五','六'][i]}步（${yaoNames[i]} · ${yaoLabel}）</div>
+        <div class="narr-lead"><i class="narr-star"></i>变化出现在第${['一','二','三','四','五','六'][i]}步（${yaoNames[i]} · ${yaoLabel}）</div>
         <div class="narr-main">这一步正处在「${p.position}」。${hintSentence}${dongMeaning}。</div>
         <div class="quote">${g[i + 2]}</div>
       </div>`;
