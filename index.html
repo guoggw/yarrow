@@ -165,7 +165,8 @@ body.locked{overflow:hidden}
 .result-overline{font-size:13px;color:#8a7050;letter-spacing:9px;margin-bottom:16px}
 .result-guaname{font-size:40px;color:#f4e0b0;letter-spacing:10px;font-weight:bold;text-shadow:0 0 24px rgba(232,201,135,.55),0 0 64px rgba(200,120,60,.3)}
 .result-divider{width:200px;height:1px;margin:22px auto 0;background:linear-gradient(90deg,transparent,#c89a5a,transparent);position:relative}
-.result-divider .divider-taiji{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;padding:0 12px;background:#0b0806;box-sizing:content-box}
+.result-divider .divider-taiji{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:0 12px;background:#0b0806;display:flex;align-items:center}
+.result-divider .divider-taiji-svg{width:16px;height:16px;animation:taijiSpin 10s linear infinite}
 .result-footer{text-align:center;margin-top:56px;font-size:12px;color:#4a3a28;letter-spacing:3px}
 /* 滚动浮现 */
 .sr{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
@@ -328,7 +329,7 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
     <div class="result-header">
       <div class="result-overline">天 机 已 现</div>
       <div class="result-guaname" id="resultGuaName"></div>
-      <div class="result-divider"><svg class="divider-taiji" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#241609"/><path d="M50,2 A48,48 0 0,1 50,98 A24,24 0 0,1 50,50 A24,24 0 0,0 50,2 Z" fill="#c89a5a"/><circle cx="50" cy="74" r="8" fill="#241609"/><circle cx="50" cy="26" r="8" fill="#c89a5a"/><circle cx="50" cy="50" r="47" fill="none" stroke="rgba(200,154,90,.5)" stroke-width="1.5"/></svg></div>
+      <div class="result-divider"><span class="divider-taiji"><svg class="divider-taiji-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#241609"/><path d="M50,2 A48,48 0 0,1 50,98 A24,24 0 0,1 50,50 A24,24 0 0,0 50,2 Z" fill="#c89a5a"/><circle cx="50" cy="74" r="8" fill="#241609"/><circle cx="50" cy="26" r="8" fill="#c89a5a"/><circle cx="50" cy="50" r="47" fill="none" stroke="rgba(200,154,90,.5)" stroke-width="1.5"/></svg></span></div>
     </div>
     <div class="hex-display" id="hexDisplay"></div>
     <div class="interpret" id="interpret"></div>
