@@ -74,12 +74,15 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .progress-text{font-size:13px;color:#8a7050;letter-spacing:2px;margin-bottom:8px}
 .progress-bar{width:200px;height:3px;background:rgba(107,74,43,.3);border-radius:2px;margin:0 auto;overflow:hidden}
 .progress-bar .fill{height:100%;width:0;background:linear-gradient(90deg,#8a5a2b,#e8c987);border-radius:2px;transition:width .4s ease}
-/* 蓍草可视化 */
-.yarrow-viz{display:flex;justify-content:center;align-items:flex-end;gap:2px;height:80px;margin:20px 0;padding:10px;background:rgba(10,7,4,.5);border-radius:8px;border:1px solid rgba(58,42,26,.4)}
-.yarrow-stick{width:3px;height:50px;background:linear-gradient(180deg,#e8c987,#8a5a2b);border-radius:1px;transition:all .5s ease;transform-origin:bottom}
-.yarrow-stick.split-left{transform:translateX(-20px) rotate(-5deg);opacity:.7}
-.yarrow-stick.split-right{transform:translateX(20px) rotate(5deg);opacity:.7}
-.yarrow-stick.removed{opacity:.2;transform:scaleY(.3)}
+/* 蓍草可视化（绝对定位演算舞台） */
+.yarrow-viz{position:relative;height:196px;margin:20px 0;padding:10px;background:rgba(10,7,4,.5);border-radius:8px;border:1px solid rgba(58,42,26,.4);overflow:hidden}
+.yarrow-stick{position:absolute;left:0;bottom:12px;width:3px;height:52px;background:linear-gradient(180deg,#e8c987,#8a5a2b);border-radius:1px;transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .5s ease,box-shadow .3s;transform-origin:bottom center;will-change:transform}
+.yarrow-stick.hung{background:linear-gradient(180deg,#ffe9b8,#e8c987);box-shadow:0 0 10px rgba(255,208,112,.75)}
+.yarrow-stick.count-glow{background:linear-gradient(180deg,#ffe9b8,#ffc860);box-shadow:0 0 9px rgba(255,208,112,.85)}
+.yarrow-stick.remainder{background:linear-gradient(180deg,#ffd070,#ff9a3d);box-shadow:0 0 13px rgba(255,160,60,.95)}
+.yarrow-stick.bright{background:linear-gradient(180deg,#fff3d6,#ffd070);box-shadow:0 0 12px rgba(255,208,112,.9)}
+.yarrow-stick.gone{opacity:0}
+.yarrow-stick.removed{opacity:0;pointer-events:none}
 /* 逐爻构建 */
 .hex-build{display:flex;flex-direction:column-reverse;align-items:center;gap:6px;margin:20px 0}
 .hex-build .build-yao{display:flex;gap:8px;align-items:center;opacity:0;transform:scaleX(0);animation:yaoAppear .5s ease-out forwards}
@@ -90,7 +93,7 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .build-yao.changing .bar{animation:yaoGlow 1s ease-in-out infinite alternate}
 @keyframes yaoGlow{from{box-shadow:0 0 4px rgba(232,201,135,.3)}to{box-shadow:0 0 16px rgba(232,201,135,.8)}}
 /* 日志（辅助） */
-.mini-log{font-size:12px;color:#6a5540;line-height:2.1;text-align:center;margin-top:18px}
+.mini-log{font-size:12px;color:#6a5540;line-height:2.1;width:max-content;margin:18px auto 0;text-align:left}
 .mini-log div{opacity:0;animation:logLine .55s ease-out forwards}
 .mini-log .biao{color:#c89a5a}
 @keyframes logLine{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -223,8 +226,6 @@ body.locked{overflow:hidden}
 /* 蓍草辉光 */
 .yarrow-stick{box-shadow:0 0 6px rgba(232,201,135,.5);will-change:transform,opacity}
 .yarrow-stick.bright{filter:brightness(1.8)}
-.yarrow-stick.flash-out{animation:stickFlash .45s ease-out forwards}
-@keyframes stickFlash{0%{filter:brightness(2.5);opacity:1}100%{filter:brightness(1);opacity:.15;transform:scaleY(.3)}}
 /* 进度条辉光脉冲 */
 .progress-bar .fill{box-shadow:0 0 8px rgba(232,201,135,.6)}
 .progress-bar .fill.pulse{animation:progPulse .4s ease-out}
@@ -262,7 +263,11 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
 .particles .p2{display:none}
 .particles.dense .p2{display:block;animation-duration:5s !important}
 /* 静音按钮 */
-.btn-mute{position:fixed;top:16px;right:16px;z-index:1000;width:40px;height:40px;border-radius:50%;border:1px solid rgba(107,74,43,.5);background:rgba(20,14,8,.7);color:#c89a5a;font-size:16px;cursor:pointer;transition:all .3s;line-height:1}
+.btn-mute{position:fixed;top:16px;right:16px;z-index:1000;width:40px;height:40px;border-radius:50%;border:1px solid rgba(107,74,43,.5);background:rgba(20,14,8,.7);color:#c89a5a;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;padding:0}
+.btn-mute svg{display:block}
+.btn-mute .ico-off{display:none}
+.btn-mute.muted .ico-on{display:none}
+.btn-mute.muted .ico-off{display:block}
 .btn-mute:hover{border-color:#c89a5a;box-shadow:0 0 12px rgba(200,154,90,.3)}
 
 /* ===== 移动端 ===== */
@@ -296,7 +301,10 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
 <!-- 特效画布 + 全屏脉动 -->
 <canvas id="fxCanvas"></canvas>
 <div class="flash-overlay" id="flashOverlay"></div>
-<button class="btn-mute" id="btnMute" title="音效开关">🔊</button>
+<button class="btn-mute" id="btnMute" title="音效开关" aria-label="音效开关">
+<svg class="ico-on" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9.5 9.5 0 0 1 0 13"/></svg>
+<svg class="ico-off" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none"/><line x1="16" y1="9.5" x2="21.5" y2="15"/><line x1="21.5" y1="9.5" x2="16" y2="15"/></svg>
+</button>
 
 <div class="wrap" id="pageDivine">
   <!-- 标题区 -->
@@ -402,8 +410,8 @@ const fxC=(()=>{
     P=P.filter(p=>p.life>0);
     for(const p of P){
       p.life-=p.decay;p.x+=p.vx;p.y+=p.vy;
-      if(p.type==='spark'){p.vy+=0.12;p.vx*=0.98;ctx.globalAlpha=Math.max(p.life,0);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,6.283);ctx.fill();}
-      else if(p.type==='ring'){const pr=1-p.life;ctx.globalAlpha=p.life*0.8;ctx.strokeStyle=p.color;ctx.lineWidth=2.5*p.life;ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.beginPath();ctx.arc(p.x,p.y,p.r0+pr*p.expand,0,6.283);ctx.stroke();}
+      if(p.type==='spark'){p.vy+=0.12;p.vx*=0.98;ctx.globalAlpha=Math.max(p.life,0);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(p.x,p.y,Math.max(p.r*p.life,0),0,6.283);ctx.fill();}
+      else if(p.type==='ring'){const pr=1-p.life;ctx.globalAlpha=Math.max(p.life,0)*0.8;ctx.strokeStyle=p.color;ctx.lineWidth=Math.max(2.5*p.life,0.1);ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.beginPath();ctx.arc(p.x,p.y,Math.max(p.r0+pr*p.expand,0.1),0,6.283);ctx.stroke();}
       else if(p.type==='text'){ctx.globalAlpha=Math.max(p.life,0);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.font='bold 15px KaiTi,serif';ctx.textAlign='center';ctx.fillText(p.text,p.x,p.y);}
     }
     ctx.globalAlpha=1;ctx.shadowBlur=0;
@@ -478,6 +486,8 @@ const sfx=(()=>{
       });
       for(let k=0;k<3;k++){tone(1900+Math.random()*1300,0.05,'triangle',v*0.07,0.02+k*0.05);}
     },
+    /* 揲四计数：短促清脆的节拍（木鱼/数珠感） */
+    tick(){const v=vol();tone(1250,0.07,'square',v*0.045);tone(2500,0.05,'sine',v*0.05);},
     /* 卦成：寺庙梵钟，低沉基频+不谐和泛音+长余韵 */
     gong(){
       const v=vol();
@@ -492,7 +502,7 @@ const sfx=(()=>{
     toggle(){muted=!muted;return muted;}
   };
 })();
-document.getElementById('btnMute').addEventListener('click',function(){this.textContent=sfx.toggle()?'🔇':'🔊';});
+document.getElementById('btnMute').addEventListener('click',function(){this.classList.toggle('muted',sfx.toggle());});
 
 /* ========== 八经卦 ========== */
 const TRIGRAM={7:'乾',6:'兑',5:'离',4:'震',3:'巽',2:'坎',1:'艮',0:'坤'};
@@ -759,15 +769,15 @@ function makeAdvice(nChange, benId, bianId, changingIdx) {
 function oneChange(total) {
   // 分二：随机分成两堆
   const left = Math.floor(Math.random() * (total - 2)) + 1;
-  let right = total - left;
+  const right = total - left;
   // 挂一：从右堆取1根
-  let l = left - 0, r = right - 1;
+  const r = right - 1;
   // 揲四：以四计数余数（1-4）
-  const lRem = ((l - 1) % 4) + 1;
+  const lRem = ((left - 1) % 4) + 1;
   const rRem = ((r - 1) % 4) + 1;
   // 归奇：挂1 + 左余 + 右余
   const used = 1 + lRem + rRem;
-  return { used, remain: total - used };
+  return { left, right, lRem, rRem, used, remain: total - used };
 }
 
 /* ========== 一爻（三变） ========== */
@@ -784,6 +794,26 @@ function oneYao() {
   return { num, changes, remain: total };
 }
 
+/* ========== 蓍草演算舞台布局 ========== */
+function stickTo(el,x,y,r){el.style.transform=`translate(${x}px,${-y}px) rotate(${r||0}deg)`;}
+/* 将一组蓍草铺成一排，中心 cx，间距 sp，底部抬升 y */
+function pileLayout(idxs,cx,sp,y,sticks){
+  const n=idxs.length;if(!n)return;
+  idxs.forEach((gi,i)=>{stickTo(sticks[gi],cx+(i-(n-1)/2)*sp,y,0);});
+}
+/* 揲四：按4根一组依次点亮，余数高亮 */
+async function countByFour(idxs,remCount,sticks){
+  const body=idxs.slice(0,idxs.length-remCount);
+  const rem=idxs.slice(idxs.length-remCount);
+  for(let g=0;g<body.length;g+=4){
+    const grp=body.slice(g,g+4);
+    grp.forEach(gi=>sticks[gi].classList.add('count-glow'));
+    sfx.tick();
+    await sleep(95);
+    grp.forEach(gi=>sticks[gi].classList.remove('count-glow'));
+  }
+  rem.forEach(gi=>sticks[gi].classList.add('remainder'));
+}
 /* ========== 起卦（动画版） ========== */
 const CN_NUM=['一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八'];
 async function divine() {
@@ -806,45 +836,81 @@ async function divine() {
   const q=document.getElementById('question').value.trim();
   if(q)log(`所问：<span class="biao">${escapeHtml(q)}</span>`);
   log('取蓍草五十，去一以象太极，其用四十有九。');
-  // 初始显示49根蓍草
-  for(let i=0;i<49;i++){const s=document.createElement('div');s.className='yarrow-stick';vizEl.appendChild(s);}
+  // 初始49根蓍草，合拢成束（舞台中央）
+  const W=vizEl.clientWidth;
+  const centerX=W/2;
+  const bundleSp=Math.min(2.4,(W*0.5)/48);
+  const sticks=[];
+  for(let i=0;i<49;i++){
+    const s=document.createElement('div');s.className='yarrow-stick';
+    s.style.transform=`translate(${centerX+(i-24)*bundleSp}px,0px)`;
+    vizEl.appendChild(s);sticks.push(s);
+  }
+  let activeList=[];for(let k=0;k<49;k++)activeList.push(k);
   await sleep(600);
   const yaos=[];const names=['初爻','二爻','三爻','四爻','五爻','上爻'];
   let changeCount=0;
   for(let i=0;i<6;i++){
     let total=49;const changes=[];
+    // 每爻重新用全部49策：复位并合拢成束
+    activeList=[];for(let k=0;k<49;k++)activeList.push(k);
+    sticks.forEach(s=>s.classList.remove('removed','hung','remainder','count-glow','bright','gone'));
+    pileLayout(activeList,centerX,bundleSp,0,sticks);
+    await sleep(380);
     for(let c=0;c<3;c++){
       changeCount++;
       progText.textContent=`第${CN_NUM[changeCount-1]}变 / 共十八变`;
       progFill.style.width=(changeCount/18*100)+'%';
       progFill.classList.remove('pulse');void progFill.offsetWidth;progFill.classList.add('pulse');
       document.body.classList.add('resonate');setTimeout(()=>document.body.classList.remove('resonate'),300);
-      // 动画：蓍草分开
-      const sticks=vizEl.children;
-      const splitPt=Math.floor(Math.random()*(total-2))+1;
-      for(let s=0;s<sticks.length;s++){
-        sticks[s].classList.remove('split-left','split-right','removed','bright','flash-out');
-        if(s<total){
-          if(s<splitPt)sticks[s].classList.add('split-left');
-          else sticks[s].classList.add('split-right');
-        }else sticks[s].classList.add('removed');
-      }
-      sfx.swish();
-      // 分裂点火花 + 短暂增亮
-      const midStick=sticks[Math.min(splitPt,total-1)];
-      if(midStick){const[mx,my]=fxCenter(midStick);fxC.burst(mx,my,'#ffd070',10,2.5);midStick.classList.add('bright');setTimeout(()=>midStick.classList.remove('bright'),300);}
-      await sleep(350);
       const oc=oneChange(total);
       changes.push(oc.used);
-      const oldTotal=total;
+      // 当前参与演算的蓍草（物理下标）
+      const leftIdxs=activeList.slice(0,oc.left);
+      const rightIdxs=activeList.slice(oc.left);
+      const hungIdx=rightIdxs[rightIdxs.length-1];
+      const rightAfter=rightIdxs.slice(0,rightIdxs.length-1);
+      const leftRemIdxs=leftIdxs.slice(leftIdxs.length-oc.lRem);
+      const rightRemIdxs=rightAfter.slice(rightAfter.length-oc.rRem);
+      // ===== 分二：左右分堆 =====
+      const sp=Math.min(5,(W*0.42)/((Math.max(leftIdxs.length,rightIdxs.length)-1)||1));
+      pileLayout(leftIdxs,W*0.26,sp,0,sticks);
+      pileLayout(rightIdxs,W*0.74,sp,0,sticks);
+      sfx.swish();
+      const[lx,ly]=fxCenter(sticks[leftIdxs[leftIdxs.length-1]]);
+      fxC.burst(lx,ly,'#ffd070',10,2.5);
+      fxC.float(lx,ly-44,'左 '+oc.left,'#c89a5a');
+      const[rx,ry]=fxCenter(sticks[rightIdxs[0]]);
+      fxC.float(rx,ry-44,'右 '+oc.right,'#c89a5a');
+      await sleep(560);
+      // ===== 挂一：右堆取一策挂于指间 =====
+      sticks[hungIdx].classList.add('hung');
+      stickTo(sticks[hungIdx],W*0.5,104,0);
+      const[hx,hy]=fxCenter(sticks[hungIdx]);
+      fxC.float(hx,hy-34,'挂 1','#ffd070');
+      await sleep(460);
+      // ===== 揲四：左堆四四而数，余数高亮 =====
+      await countByFour(leftIdxs,oc.lRem,sticks);
+      const[lrx,lry]=fxCenter(sticks[leftRemIdxs[0]]);
+      fxC.float(lrx,lry-36,'余 '+oc.lRem,'#ff9a3d');
+      await sleep(240);
+      // ===== 揲四：右堆 =====
+      await countByFour(rightAfter,oc.rRem,sticks);
+      const[rrx,rry]=fxCenter(sticks[rightRemIdxs[0]]);
+      fxC.float(rrx,rry-36,'余 '+oc.rRem,'#ff9a3d');
+      await sleep(280);
+      // ===== 归奇：挂一+左右余数归扐，其余合拢 =====
+      const setAside=[hungIdx,...leftRemIdxs,...rightRemIdxs];
+      const keep=[...leftIdxs.slice(0,leftIdxs.length-oc.lRem),...rightAfter.slice(0,rightAfter.length-oc.rRem)];
       total=oc.remain;
-      // 动画：归奇移除（仅新消耗的蓍草闪白金 + 火花 + 上浮余数）
-      for(let s=total;s<oldTotal;s++){if(sticks[s]){sticks[s].classList.remove('removed');sticks[s].classList.add('flash-out');}}
-      const[ex,ey]=fxCenter(vizEl);
-      fxC.burst(ex,ey,'#e8c987',8,2);
-      fxC.float(ex,ey-36,'余'+oc.used,'#ffd070');
-      await sleep(250);
-      for(let s=total;s<49;s++){if(sticks[s]){sticks[s].classList.remove('flash-out');sticks[s].classList.add('removed');}}
+      setAside.forEach((gi,k)=>{stickTo(sticks[gi],W*0.5+(k-(setAside.length-1)/2)*6,104,0);});
+      pileLayout(keep,centerX,bundleSp,0,sticks);
+      const[ax,ay]=fxCenter(vizEl);
+      fxC.burst(ax,ay-70,'#e8c987',10,2.2);
+      fxC.float(ax,ay-92,'余 '+total+' 策','#ffd070');
+      await sleep(620);
+      setAside.forEach(gi=>{sticks[gi].classList.remove('hung','remainder');sticks[gi].classList.add('removed');});
+      activeList=keep;
     }
     const num=total/4;
     yaos.push(num);
