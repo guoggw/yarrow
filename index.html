@@ -68,8 +68,6 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 @keyframes txtShimmer{to{background-position:-250% 0}}
 
 /* ===== 起卦过程 ===== */
-.process-section{display:none;margin-bottom:40px}
-.process-section.active{display:block}
 .progress-wrap{text-align:center;margin-bottom:20px}
 .progress-text{font-size:13px;color:#8a7050;letter-spacing:2px;margin-bottom:8px}
 .progress-bar{width:200px;height:3px;background:rgba(107,74,43,.3);border-radius:2px;margin:0 auto;overflow:hidden}
@@ -92,14 +90,50 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .build-yao.yin .bar{width:56px}
 .build-yao.changing .bar{animation:yaoGlow 1s ease-in-out infinite alternate}
 @keyframes yaoGlow{from{box-shadow:0 0 4px rgba(232,201,135,.3)}to{box-shadow:0 0 16px rgba(232,201,135,.8)}}
-/* 日志（辅助） */
-.mini-log{font-size:12px;color:#6a5540;line-height:2.1;width:max-content;margin:18px auto 0;text-align:left}
-.mini-log div{opacity:0;animation:logLine .55s ease-out forwards}
-.mini-log .biao{color:#c89a5a}
-@keyframes logLine{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.mini-log .log-yao{display:inline-flex;gap:3px;align-items:center;width:40px;height:6px;vertical-align:middle;margin:0 3px}
-.mini-log .log-yao::before{content:'';flex:1;height:4px;border-radius:1px;background:linear-gradient(90deg,#c89a5a,#e8c987,#c89a5a)}
-.mini-log .log-yao.yin::after{content:'';flex:1;height:4px;border-radius:1px;background:linear-gradient(90deg,#c89a5a,#e8c987,#c89a5a)}
+/* 旁白（单行，取代多行日志，根治浮字重叠） */
+.narration{font-size:14px;color:#c89a5a;letter-spacing:1px;min-height:24px;text-align:center;line-height:1.7;opacity:0}
+.narration.show{animation:narrIn .5s ease-out forwards}
+@keyframes narrIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.narration .biao{color:#e8c987}
+.narration b{color:#ffd070;font-weight:normal;text-shadow:0 0 8px rgba(255,208,112,.45)}
+/* 爻符（定宽，阴阳等长） */
+.log-yao{display:inline-flex;gap:3px;align-items:center;width:40px;height:6px;vertical-align:middle;margin:0 3px}
+.log-yao::before{content:'';flex:1;height:4px;border-radius:1px;background:linear-gradient(90deg,#c89a5a,#e8c987,#c89a5a)}
+.log-yao.yin::after{content:'';flex:1;height:4px;border-radius:1px;background:linear-gradient(90deg,#c89a5a,#e8c987,#c89a5a)}
+
+/* ===== 演算页（全屏覆盖层，独立成页只展示演算）===== */
+#pageProcess{position:fixed;inset:0;z-index:400;background:radial-gradient(ellipse at 50% 16%,#181008 0%,#0a0705 55%,#040302 100%);opacity:0;visibility:hidden;transition:opacity .7s ease,visibility .7s;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#pageProcess.active{opacity:1;visibility:visible}
+.process-inner{width:100%;max-width:560px;padding:0 24px;display:flex;flex-direction:column;align-items:center;gap:16px}
+/* 阶段字幕（《系辞》四步） */
+.stage-caption{text-align:center;min-height:92px;display:flex;flex-direction:column;justify-content:center}
+.stage-xici{font-size:30px;letter-spacing:9px;text-indent:9px;color:#f4e0b0;text-shadow:0 0 26px rgba(232,201,135,.5),0 0 60px rgba(200,120,60,.2);opacity:0}
+.stage-xici.swap{animation:stageIn .7s ease-out forwards}
+.stage-sub{font-size:13px;color:#8a7050;letter-spacing:4px;text-indent:4px;margin-top:9px;opacity:0}
+.stage-sub.swap{animation:stageIn .7s ease-out .12s forwards}
+@keyframes stageIn{from{opacity:0;transform:translateY(14px) scale(.96);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+#pageProcess .progress-wrap{margin-bottom:0}
+#pageProcess .yarrow-viz{width:100%;margin:0}
+#pageProcess .hex-build{margin:0;min-height:118px;width:100%}
+/* 止卦按钮 */
+.btn-stop{margin-top:4px;padding:10px 30px 10px 36px;border-radius:40px;border:1px solid rgba(107,74,43,.5);background:rgba(20,14,8,.6);color:#8a7050;font-family:inherit;font-size:14px;letter-spacing:6px;cursor:pointer;transition:all .3s}
+.btn-stop:hover{border-color:#c89a5a;color:#c89a5a;box-shadow:0 0 14px rgba(200,154,90,.2)}
+.btn-stop:active{transform:scale(.96)}
+/* 矮视口适配（保证一屏完整展示） */
+@media (max-height:700px){
+  .process-inner{gap:11px}
+  .stage-caption{min-height:74px}
+  .stage-xici{font-size:26px}
+  #pageProcess .yarrow-viz{height:160px}
+  #pageProcess .hex-build{min-height:102px}
+}
+@media (max-height:580px){
+  .process-inner{gap:8px}
+  .stage-caption{min-height:60px}
+  .stage-xici{font-size:22px;letter-spacing:6px;text-indent:6px}
+  #pageProcess .yarrow-viz{height:132px}
+  #pageProcess .hex-build{min-height:90px}
+}
 
 /* ===== 揭晓特效 ===== */
 .reveal-overlay{position:fixed;inset:0;z-index:999;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -325,21 +359,28 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
     <button class="btn-divine" id="btnStart">起卦<span class="ripple"></span></button>
   </div>
 
-  <!-- 起卦过程 -->
-  <div class="process-section" id="processSection">
+  <!-- 揭晓遮罩 -->
+  <div class="reveal-overlay" id="revealOverlay"><div class="reveal-rays"></div><div class="reveal-text">卦 成</div></div>
+
+  <div class="footer enter enter-d4">— 天垂象 · 见吉凶 · 圣人则之 —</div>
+</div>
+
+<!-- ===== 演算页（全屏覆盖层）===== -->
+<div id="pageProcess">
+  <div class="process-inner">
+    <div class="stage-caption">
+      <div class="stage-xici" id="stageXici">大衍之数五十</div>
+      <div class="stage-sub" id="stageSub">其用四十有九</div>
+    </div>
     <div class="progress-wrap">
       <div class="progress-text" id="progressText">第一变 / 共十八变</div>
       <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
     </div>
     <div class="yarrow-viz" id="yarrowViz"></div>
+    <div class="narration" id="narration"></div>
     <div class="hex-build" id="hexBuild"><div class="build-aura" id="buildAura"></div></div>
-    <div class="mini-log" id="miniLog"></div>
+    <button class="btn-stop" id="btnStop">止 卦</button>
   </div>
-
-  <!-- 揭晓遮罩 -->
-  <div class="reveal-overlay" id="revealOverlay"><div class="reveal-rays"></div><div class="reveal-text">卦 成</div></div>
-
-  <div class="footer enter enter-d4">— 天垂象 · 见吉凶 · 圣人则之 —</div>
 </div>
 
 <!-- ===== 解卦页（全屏覆盖层）===== -->
@@ -806,40 +847,57 @@ async function countByFour(idxs,remCount,sticks){
   const body=idxs.slice(0,idxs.length-remCount);
   const rem=idxs.slice(idxs.length-remCount);
   for(let g=0;g<body.length;g+=4){
+    if(stopFlag)break;
     const grp=body.slice(g,g+4);
     grp.forEach(gi=>sticks[gi].classList.add('count-glow'));
     sfx.tick();
     await sleep(95);
     grp.forEach(gi=>sticks[gi].classList.remove('count-glow'));
   }
-  rem.forEach(gi=>sticks[gi].classList.add('remainder'));
+  if(!stopFlag)rem.forEach(gi=>sticks[gi].classList.add('remainder'));
 }
 /* ========== 起卦（动画版） ========== */
 const CN_NUM=['一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八'];
+let stopFlag=false; /* 止卦中断标志 */
 async function divine() {
-  const procSec=document.getElementById('processSection');
+  const pageProc=document.getElementById('pageProcess');
   const vizEl=document.getElementById('yarrowViz');
   const buildEl=document.getElementById('hexBuild');
-  const logEl=document.getElementById('miniLog');
+  const narrEl=document.getElementById('narration');
+  const stageXici=document.getElementById('stageXici');
+  const stageSub=document.getElementById('stageSub');
   const progText=document.getElementById('progressText');
   const progFill=document.getElementById('progressFill');
   const btn=document.getElementById('btnStart');
   const flashEl=document.getElementById('flashOverlay');
-  procSec.classList.add('active');
-  vizEl.innerHTML='';buildEl.innerHTML='<div class="build-aura" id="buildAura"></div>';logEl.innerHTML='';
+  stopFlag=false;
+  /* 重置演算页 */
+  vizEl.innerHTML='';buildEl.innerHTML='<div class="build-aura" id="buildAura"></div>';
+  narrEl.className='narration';narrEl.innerHTML='';
+  progFill.style.width='0';progText.textContent='第一变 / 共十八变';
   const auraEl=document.getElementById('buildAura');
   btn.disabled=true;
   btn.classList.add('divining');
   btn.innerHTML='<span class="btn-txt">凝神静气…</span>';
   sfx.unlock();
   document.getElementById('particles').classList.add('dense');
+  /* 入坛暗场：演算页自暗中浮现，锁定背景滚动 */
+  setStage('大衍之数五十','其用四十有九');
+  pageProc.classList.add('active');
+  document.body.classList.add('locked');
+  await sleep(750);
   const q=document.getElementById('question').value.trim();
-  if(q)log(`所问：<span class="biao">${escapeHtml(q)}</span>`);
-  log('取蓍草五十，去一以象太极，其用四十有九。');
+  if(q){narrate(`所问：<span class="biao">${escapeHtml(q)}</span>`);await sleep(1000);}
+  narrate('取蓍草五十，去一以象太极，其用四十有九。');
+  function narrate(txt){narrEl.classList.remove('show');void narrEl.offsetWidth;narrEl.innerHTML=txt;narrEl.classList.add('show');}
+  function setStage(main,sub){stageXici.classList.remove('swap');stageSub.classList.remove('swap');void stageXici.offsetWidth;stageXici.textContent=main;stageSub.textContent=sub||'';stageXici.classList.add('swap');stageSub.classList.add('swap');}
+  function chk(){if(stopFlag)throw 'ABORT';}
+  function bail(){pageProc.classList.remove('active');document.body.classList.remove('locked');document.getElementById('particles').classList.remove('dense');auraEl.style.opacity=0;btn.disabled=false;btn.classList.remove('divining');btn.innerHTML='起卦<span class="ripple"></span>';}
   // 初始49根蓍草，合拢成束（舞台中央）
   const W=vizEl.clientWidth;
   const centerX=W/2;
   const bundleSp=Math.min(2.4,(W*0.5)/48);
+  const hungY=Math.min(104,vizEl.clientHeight-70); /* 挂一高度，适配矮视口 */
   const sticks=[];
   for(let i=0;i<49;i++){
     const s=document.createElement('div');s.className='yarrow-stick';
@@ -850,15 +908,16 @@ async function divine() {
   await sleep(600);
   const yaos=[];const names=['初爻','二爻','三爻','四爻','五爻','上爻'];
   let changeCount=0;
+  try{
   for(let i=0;i<6;i++){
     let total=49;const changes=[];
     // 每爻重新用全部49策：复位并合拢成束
     activeList=[];for(let k=0;k<49;k++)activeList.push(k);
     sticks.forEach(s=>s.classList.remove('removed','hung','remainder','count-glow','bright','gone'));
     pileLayout(activeList,centerX,bundleSp,0,sticks);
-    await sleep(380);
+    await sleep(380);chk();
     for(let c=0;c<3;c++){
-      changeCount++;
+      changeCount++;chk();
       progText.textContent=`第${CN_NUM[changeCount-1]}变 / 共十八变`;
       progFill.style.width=(changeCount/18*100)+'%';
       progFill.classList.remove('pulse');void progFill.offsetWidth;progFill.classList.add('pulse');
@@ -873,42 +932,41 @@ async function divine() {
       const leftRemIdxs=leftIdxs.slice(leftIdxs.length-oc.lRem);
       const rightRemIdxs=rightAfter.slice(rightAfter.length-oc.rRem);
       // ===== 分二：左右分堆 =====
+      setStage('分而为二','以象两');
       const sp=Math.min(5,(W*0.42)/((Math.max(leftIdxs.length,rightIdxs.length)-1)||1));
       pileLayout(leftIdxs,W*0.26,sp,0,sticks);
       pileLayout(rightIdxs,W*0.74,sp,0,sticks);
       sfx.swish();
       const[lx,ly]=fxCenter(sticks[leftIdxs[leftIdxs.length-1]]);
       fxC.burst(lx,ly,'#ffd070',10,2.5);
-      fxC.float(lx,ly-44,'左 '+oc.left,'#c89a5a');
-      const[rx,ry]=fxCenter(sticks[rightIdxs[0]]);
-      fxC.float(rx,ry-44,'右 '+oc.right,'#c89a5a');
-      await sleep(560);
+      narrate(`分而为二 · 左 <b>${oc.left}</b> 策 · 右 <b>${oc.right}</b> 策`);
+      await sleep(640);chk();
       // ===== 挂一：右堆取一策挂于指间 =====
+      setStage('挂一以象三','');
       sticks[hungIdx].classList.add('hung');
-      stickTo(sticks[hungIdx],W*0.5,104,0);
-      const[hx,hy]=fxCenter(sticks[hungIdx]);
-      fxC.float(hx,hy-34,'挂 1','#ffd070');
-      await sleep(460);
+      stickTo(sticks[hungIdx],W*0.5,hungY,0);
+      narrate('挂一以象三 · 挂 <b>1</b> 策于指间');
+      await sleep(520);chk();
       // ===== 揲四：左堆四四而数，余数高亮 =====
+      setStage('揲之以四','以象四时');
       await countByFour(leftIdxs,oc.lRem,sticks);
-      const[lrx,lry]=fxCenter(sticks[leftRemIdxs[0]]);
-      fxC.float(lrx,lry-36,'余 '+oc.lRem,'#ff9a3d');
-      await sleep(240);
+      narrate(`揲之以四 · 左堆余 <b>${oc.lRem}</b> 策`);
+      await sleep(320);chk();
       // ===== 揲四：右堆 =====
       await countByFour(rightAfter,oc.rRem,sticks);
-      const[rrx,rry]=fxCenter(sticks[rightRemIdxs[0]]);
-      fxC.float(rrx,rry-36,'余 '+oc.rRem,'#ff9a3d');
-      await sleep(280);
+      narrate(`揲之以四 · 右堆余 <b>${oc.rRem}</b> 策`);
+      await sleep(340);chk();
       // ===== 归奇：挂一+左右余数归扐，其余合拢 =====
+      setStage('归奇于扐','以象闰');
       const setAside=[hungIdx,...leftRemIdxs,...rightRemIdxs];
       const keep=[...leftIdxs.slice(0,leftIdxs.length-oc.lRem),...rightAfter.slice(0,rightAfter.length-oc.rRem)];
       total=oc.remain;
-      setAside.forEach((gi,k)=>{stickTo(sticks[gi],W*0.5+(k-(setAside.length-1)/2)*6,104,0);});
+      setAside.forEach((gi,k)=>{stickTo(sticks[gi],W*0.5+(k-(setAside.length-1)/2)*6,hungY,0);});
       pileLayout(keep,centerX,bundleSp,0,sticks);
       const[ax,ay]=fxCenter(vizEl);
       fxC.burst(ax,ay-70,'#e8c987',10,2.2);
-      fxC.float(ax,ay-92,'余 '+total+' 策','#ffd070');
-      await sleep(620);
+      narrate(`归奇于扐 · 去 <b>${oc.used}</b> 策 · 余 <b>${total}</b> 策`);
+      await sleep(700);chk();
       setAside.forEach(gi=>{sticks[gi].classList.remove('hung','remainder');sticks[gi].classList.add('removed');});
       activeList=keep;
     }
@@ -916,7 +974,7 @@ async function divine() {
     yaos.push(num);
     const isYangYao=(num===7||num===9),isDongYao=(num===6||num===9);
     const label=`${{6:'老阴',7:'少阳',8:'少阴',9:'老阳'}[num]} <i class="log-yao ${isYangYao?'yang':'yin'}"></i>${isDongYao?' 动':''}`;
-    log(`第${i+1}爻（${names[i]}）得 <span class="biao">${num} · ${label}</span>`);
+    narrate(`第${i+1}爻（${names[i]}）得 <span class="biao">${num} · ${label}</span>`);
     // 逐爻构建卦象
     const yaoDiv=document.createElement('div');
     const isYang=(num===7||num===9);
@@ -945,6 +1003,7 @@ async function divine() {
     }
     await sleep(400);
   }
+  }catch(e){if(e==='ABORT'){bail();return;}throw e;}
   await sleep(500);
   // 揭晓特效：光芒 + 冲击波 + 锣声
   const overlay=document.getElementById('revealOverlay');
@@ -963,7 +1022,7 @@ async function divine() {
   const changingIdx=yaos.map((n,i)=>(n===6||n===9)?i:-1).filter(i=>i>=0);
   const benId=hexIdFromYaos(benGua);
   let bianId=null;
-  if(changingIdx.length>0){bianId=hexIdFromYaos(bianGua);log(`变卦 <span class="biao">${GUA[bianId][0]}</span>`);}
+  if(changingIdx.length>0){bianId=hexIdFromYaos(bianGua);}
   // 关门（遮住起卦页），门后展开解卦页
   const doors=document.getElementById('doors');
   const pageResult=document.getElementById('pageResult');
@@ -971,6 +1030,7 @@ async function divine() {
   document.getElementById('resultGuaName').textContent=GUA[benId][0];
   pageResult.classList.remove('revealed');
   pageResult.scrollTop=0;
+  pageProc.classList.remove('active'); /* 隐藏演算页（在卦成遮罩后方） */
   doors.classList.add('closed');
   pageResult.classList.add('active');
   backdrop.classList.add('active');
@@ -994,13 +1054,12 @@ async function divine() {
   // 显示“再占”按钮
   document.getElementById('btnAgain').classList.add('show');
   // 重置起卦页状态（解卦页后方）
-  procSec.classList.remove('active');
+  pageProc.classList.remove('active');
   document.getElementById('particles').classList.remove('dense');
   auraEl.style.opacity=0;
   btn.disabled=false;
   btn.classList.remove('divining');
   btn.innerHTML='起卦<span class="ripple"></span>';
-  function log(txt){const d=document.createElement('div');d.innerHTML=txt;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}
 }
 
 function hexIdFromYaos(bits) {
@@ -1220,6 +1279,8 @@ function setupScrollReveal(){
 }
 
 document.getElementById('btnStart').addEventListener('click', divine);
+/* 止卦：中断当前起卦，返回起卦页 */
+document.getElementById('btnStop').addEventListener('click',()=>{stopFlag=true;});
 /* 解卦页“再占一卦”：关门 → 重置 → 开门 */
 document.getElementById('btnAgain').addEventListener('click', async () => {
   const doors=document.getElementById('doors');
@@ -1231,10 +1292,11 @@ document.getElementById('btnAgain').addEventListener('click', async () => {
   pageResult.classList.remove('active','revealed');
   backdrop.classList.remove('active');
   document.getElementById('question').value='';
-  document.getElementById('processSection').classList.remove('active');
+  /* 重置演算页 */
+  document.getElementById('pageProcess').classList.remove('active');
   document.getElementById('yarrowViz').innerHTML='';
   document.getElementById('hexBuild').innerHTML='<div class="build-aura" id="buildAura"></div>';
-  document.getElementById('miniLog').innerHTML='';
+  const narr=document.getElementById('narration');narr.className='narration';narr.innerHTML='';
   document.getElementById('progressFill').style.width='0';
   document.getElementById('progressText').textContent='第一变 / 共十八变';
   window.scrollTo(0,0);
