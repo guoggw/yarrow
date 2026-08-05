@@ -598,8 +598,11 @@ function computeTiming(benId,bianId,changingIdx,benBits,bianBits){
   const secYear=baseYear(sec.startMonth);
   // 果成（上卦/外）必须在起因之后
   let priYear=baseYear(pri.startMonth);
-  if(priYear<=secYear && pri.startMonth<=sec.startMonth){
-    priYear=secYear+1; // 果成推到下一个周期
+  if(priYear<secYear){
+    priYear=secYear; // 至少同年
+  }
+  if(priYear===secYear && pri.startMonth<sec.startMonth){
+    priYear=secYear+1; // 同年但月份更早，推到下一年
   }
   // 跨年卦（坎卦 12-1月）
   const priYearEnd=pri.crossYear?priYear+1:priYear;
