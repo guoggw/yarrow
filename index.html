@@ -51,19 +51,20 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .question-input:focus{border-color:#c89a5a;box-shadow:0 0 20px rgba(200,154,90,.15)}
 .question-input::placeholder{color:#6a5540}
 /* 生辰八字面板 */
-.bazi-toggle{display:block;text-align:center;margin:18px auto 0;font-size:13px;color:#6a5540;letter-spacing:2px;cursor:pointer;transition:color .3s;user-select:none}
+.bazi-toggle{display:block;text-align:center;margin:18px auto 0;font-size:13px;color:#6a5540;letter-spacing:2px;cursor:pointer;transition:color .3s;user-select:none;-webkit-tap-highlight-color:transparent}
 .bazi-toggle:hover{color:#8a7050}
-.bazi-toggle .arrow{display:inline-block;transition:transform .3s;margin-right:4px}
+.bazi-toggle .arrow{display:inline-block;width:0;height:0;border-left:5px solid #6a5540;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .3s;margin-right:6px;vertical-align:middle}
 .bazi-toggle.open .arrow{transform:rotate(90deg)}
 .bazi-panel{max-height:0;overflow:hidden;transition:max-height .4s ease,opacity .3s;opacity:0;margin-top:0}
-.bazi-panel.open{max-height:280px;opacity:1;margin-top:14px}
-.bazi-inner{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:14px 10px;background:rgba(20,14,8,.5);border:1px solid rgba(107,74,43,.25);border-radius:10px}
-.bazi-label{font-size:12px;color:#6a5540;letter-spacing:1px}
-.bazi-sel{padding:7px 8px;background:rgba(20,14,8,.8);border:1px solid rgba(107,74,43,.4);color:#c89a5a;font-family:inherit;font-size:13px;border-radius:6px;outline:none;cursor:pointer;min-width:56px;text-align:center;appearance:none;-webkit-appearance:none}
+.bazi-panel.open{max-height:320px;opacity:1;margin-top:14px}
+.bazi-inner{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:16px 12px;background:rgba(20,14,8,.5);border:1px solid rgba(107,74,43,.25);border-radius:10px}
+.bazi-label{font-size:12px;color:#7a6550;letter-spacing:1px}
+.bazi-sel{padding:8px 22px 8px 8px;background:rgba(20,14,8,.8);border:1px solid rgba(107,74,43,.4);color:#c89a5a;font-family:inherit;font-size:13px;border-radius:6px;outline:none;cursor:pointer;min-width:56px;text-align:center;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236a5540'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;background-size:8px}
 .bazi-sel:focus{border-color:#c89a5a}
-.bazi-row{display:flex;gap:6px;align-items:center;width:100%;justify-content:center}
-.bazi-privacy{font-size:11px;color:#4a3828;letter-spacing:1px;margin-top:8px;text-align:center}
-.bazi-clear{font-size:12px;color:#6a5540;background:none;border:1px solid rgba(107,74,43,.3);padding:4px 12px;border-radius:14px;cursor:pointer;transition:all .25s;letter-spacing:1px}
+.bazi-row{display:flex;gap:6px;align-items:center;width:100%;justify-content:center;flex-wrap:wrap}
+.bazi-privacy{font-size:11px;color:#6a5540;letter-spacing:1px;margin-top:10px;text-align:center;padding-top:8px;border-top:1px solid rgba(107,74,43,.15)}
+.bazi-privacy svg{vertical-align:middle;margin-right:3px;opacity:.5}
+.bazi-clear{font-size:12px;color:#6a5540;background:none;border:1px solid rgba(107,74,43,.3);padding:6px 14px;border-radius:14px;cursor:pointer;transition:all .25s;letter-spacing:1px;-webkit-tap-highlight-color:transparent}
 .bazi-clear:hover{color:#c89a5a;border-color:rgba(200,154,90,.4)}
 
 /* 圆形起卦按钮 */
@@ -394,7 +395,7 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
     <p class="guide-text">心诚则灵 · 静心三息 · <em>默念所问</em></p>
     <input class="question-input" id="question" placeholder="所问之事（可留空）" />
     <!-- 生辰八字（可选） -->
-    <div class="bazi-toggle" id="baziToggle"><span class="arrow">▸</span>生辰八字（可选 · 仅存本机）</div>
+    <div class="bazi-toggle" id="baziToggle"><span class="arrow"></span>生辰八字（可选 · 仅存本机）</div>
     <div class="bazi-panel" id="baziPanel">
       <div class="bazi-inner">
         <div class="bazi-row">
@@ -417,7 +418,7 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
           </select>
           <button class="bazi-clear" id="baziClear">清空</button>
         </div>
-        <div class="bazi-privacy">ℹ 生辰信息仅存于本机浏览器，不会上传</div>
+        <div class="bazi-privacy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none"><rect x="1" y="6" width="9" height="6.5" rx="1.5" stroke="#6a5540" stroke-width="1"/><path d="M3 6V4a2.5 2.5 0 0 1 5 0v2" stroke="#6a5540" stroke-width="1" fill="none"/></svg> 生辰信息仅存于本机，不会上传</div>
       </div>
     </div>
     <button class="btn-divine" id="btnStart">起卦<span class="ripple"></span></button>
