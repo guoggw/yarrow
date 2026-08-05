@@ -574,7 +574,7 @@ const TRIGRAM_TIMING={
   5:{name:'离',season:'仲夏',lunar:'午月',solar:'6月中旬至7月中旬',startMonth:6,element:'火',direction:'南',hour:'午时（11-13点）'},
   4:{name:'震',season:'仲春',lunar:'卯月',solar:'3月中旬至4月中旬',startMonth:3,element:'木',direction:'东',hour:'卯时（5-7点）'},
   3:{name:'巽',season:'春夏之交',lunar:'辰巳月',solar:'4月中旬至6月中旬',startMonth:4,element:'木',direction:'东南',hour:'辰巳时（7-11点）'},
-  2:{name:'坎',season:'仲冬',lunar:'子月',solar:'12月中旬至次年1月中旬',startMonth:12,crossYear:true,element:'水',direction:'北',hour:'子时（23-1点）'},
+  2:{name:'坎',season:'仲冬',lunar:'子月',solar:'12月中旬',solarEnd:'1月中旬',startMonth:12,crossYear:true,element:'水',direction:'北',hour:'子时（23-1点）'},
   1:{name:'艮',season:'冬春之交',lunar:'丑寅月',solar:'1月中旬至3月中旬',startMonth:1,element:'土',direction:'东北',hour:'丑寅时（1-5点）'},
   0:{name:'坤',season:'夏秋之交',lunar:'未申月',solar:'7月中旬至9月中旬',startMonth:7,element:'土',direction:'西南',hour:'未申时（13-17点）'}
 };
@@ -1233,8 +1233,8 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
   html += `<div class="narrative timing sr">
     <div class="timing-lead">此卦变入${srcName}，下卦为「${timing.sec.name}${timing.secSym}」，上卦为「${timing.pri.name}${timing.priSym}」。</div>
     <div class="timing-block">
-      <div class="timing-row"><span class="timing-label">起因之月</span><span class="timing-val">${timing.sec.season} · ${timing.sec.lunar}（约${timing.secYear}年${timing.sec.solar}${timing.sec.crossYear?`至${timing.secYearEnd}年`:''}）</span></div>
-      <div class="timing-row"><span class="timing-label">果成之时</span><span class="timing-val">${timing.pri.season} · ${timing.pri.lunar}（约${timing.priYear}年${timing.pri.solar}${timing.pri.crossYear?`至${timing.priYearEnd}年`:''}）</span></div>
+      <div class="timing-row"><span class="timing-label">起因之月</span><span class="timing-val">${timing.sec.season} · ${timing.sec.lunar}（约${timing.sec.crossYear?`${timing.secYear}年${timing.sec.solar}至${timing.secYearEnd}年${timing.sec.solarEnd}`:`${timing.secYear}年${timing.sec.solar}`}）</span></div>
+      <div class="timing-row"><span class="timing-label">果成之时</span><span class="timing-val">${timing.pri.season} · ${timing.pri.lunar}（约${timing.pri.crossYear?`${timing.priYear}年${timing.pri.solar}至${timing.priYearEnd}年${timing.pri.solarEnd}`:`${timing.priYear}年${timing.pri.solar}`}）</span></div>
       <div class="timing-row"><span class="timing-label">得力方位</span><span class="timing-val">${timing.pri.direction}（${timing.pri.element}象）</span></div>
       <div class="timing-row"><span class="timing-label">吉时</span><span class="timing-val">${timing.pri.hour}</span></div>
     </div>
