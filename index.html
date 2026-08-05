@@ -746,39 +746,56 @@ const BAZI=(function(){
 
   /* 日主强弱（简化版） */
   function dayMasterStrength(pillars,monthBranch){
-    if(!pillars[2]) return{strength:'未知',desc:'时辰未知，无法精确判断'};
+    if(!pillars[2]) return{strength:'未知',score:0,desc:'时辰未知，无法精确判断'};
     const dayEl=EL_STEM[STEMS[pillars[2].stem]];
     const monthEl=EL_BRANCH[BRANCHES[monthBranch]];
-    /* 月令生扶日主则得令 */
     const shengMap={'木':'水','火':'木','土':'火','金':'土','水':'金'}; /* X生Y */
-    const sameEl=(dayEl===monthEl);
-    const sheng=(shengMap[dayEl]===monthEl); /* 月令生日主 */
-    /* 统计四柱中生扶日主的个数 */
-    let support=0;
-    pillars.forEach(p=>{
-      if(!p) return;
-      const se=EL_STEM[STEMS[p.stem]];
-      const be=EL_BRANCH[BRANCHES[p.branch]];
-      if(se===dayEl||shengMap[dayEl]===se) support++;
-      if(be===dayEl||shengMap[dayEl]===be) support++;
-    });
-    const isStrong=(sheng||sameEl)&&support>=3;
+    const isLing=(dayEl===monthEl||shengMap[dayEl]===monthEl);
+    /* 加权评分（满分9）：月令2分，其他天干各1分，其他地支各1.5分，日支(坐下)1分 */
+    /* 日干本身不计入支持 */
+    let score=0;
+    if(isLing) score+=2; /* 得令 */
+    /* 年柱 */
+    if(pillars[0]){
+      const se=EL_STEM[STEMS[pillars[0].stem]],be=EL_BRANCH[BRANCHES[pillars[0].branch]];
+      if(se===dayEl||shengMap[dayEl]===se) score+=1;
+      if(be===dayEl||shengMap[dayEl]===be) score+=1.5;
+    }
+    /* 月柱（不含月令已计的2分） */
+    if(pillars[1]){
+      const se=EL_STEM[STEMS[pillars[1].stem]];
+      if(se===dayEl||shengMap[dayEl]===se) score+=1;
+    }
+    /* 日支（坐下根基，1分） */
+    const dayBrEl=EL_BRANCH[BRANCHES[pillars[2].branch]];
+    if(dayBrEl===dayEl||shengMap[dayEl]===dayBrEl) score+=1;
+    /* 时柱 */
+    if(pillars[3]){
+      const se=EL_STEM[STEMS[pillars[3].stem]],be=EL_BRANCH[BRANCHES[pillars[3].branch]];
+      if(se===dayEl||shengMap[dayEl]===se) score+=1;
+      if(be===dayEl||shengMap[dayEl]===be) score+=1.5;
+    }
+    const isStrong=score>=4;
+    const lingDesc=isLing?'得令':'失令';
     return{
       strength:isStrong?'身强':'身弱',
-      desc:`日主${STEMS[pillars[2].stem]}${dayEl}，${sheng?'月令生扶':sameEl?'月令同气':'月令克泄'}，生扶数${support}/8`
+      score,
+      desc:`日主${STEMS[pillars[2].stem]}${dayEl}，${lingDesc}，强度${score.toFixed(1)}/9`
     };
   }
 
-  /* 喜用神推算（简化版） */
+  /* 喜用神推算（加权评分版） */
   function favorableElements(strength,dayEl){
-    const shengMap={'木':'水','火':'木','土':'火','金':'土','水':'金'};
-    const keMap={'木':'土','火':'金','土':'水','金':'木','水':'火'};
+    const shengMap={'木':'水','火':'木','土':'火','金':'土','水':'金'}; /* X生Y */
+    const woSheng={'木':'火','火':'土','土':'金','金':'水','水':'木'}; /* 我生 */
+    const keMap={'木':'土','火':'金','土':'水','金':'木','水':'火'}; /* 我克 */
+    const keBy={'木':'金','火':'水','土':'木','金':'火','水':'土'}; /* 克我 */
     if(strength==='身强'){
       /* 身强喜克泄耗：克我(官杀)、我生(食伤)、我克(财星) */
-      return{favorable:[keMap[dayEl]],unfavorable:[dayEl,shengMap[dayEl]]};
+      return{favorable:[keBy[dayEl],woSheng[dayEl],keMap[dayEl]],unfavorable:[dayEl,shengMap[dayEl]]};
     }else{
       /* 身弱喜生扶：生我(印星)、同我(比劫) */
-      return{favorable:[shengMap[dayEl],dayEl],unfavorable:[keMap[dayEl]]};
+      return{favorable:[shengMap[dayEl],dayEl],unfavorable:[keBy[dayEl],woSheng[dayEl],keMap[dayEl]]};
     }
   }
 
