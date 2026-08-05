@@ -62,10 +62,11 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .bazi-sel{padding:8px 22px 8px 8px;background:rgba(20,14,8,.8);border:1px solid rgba(107,74,43,.4);color:#c89a5a;font-family:inherit;font-size:13px;border-radius:6px;outline:none;cursor:pointer;min-width:56px;text-align:center;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236a5540'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;background-size:8px}
 .bazi-sel:focus{border-color:#c89a5a}
 .bazi-row{display:flex;gap:6px;align-items:center;width:100%;justify-content:center;flex-wrap:wrap}
-.bazi-privacy{font-size:11px;color:#6a5540;letter-spacing:1px;margin-top:10px;text-align:center;padding-top:8px;border-top:1px solid rgba(107,74,43,.15)}
+.bazi-privacy{font-size:11px;color:#6a5540;letter-spacing:1px}
 .bazi-privacy svg{vertical-align:middle;margin-right:3px;opacity:.5}
-.bazi-clear{font-size:12px;color:#6a5540;background:none;border:1px solid rgba(107,74,43,.3);padding:8px 18px;border-radius:14px;cursor:pointer;transition:all .25s;letter-spacing:2px;-webkit-tap-highlight-color:transparent}
-.bazi-clear:hover{color:#c89a5a;border-color:rgba(200,154,90,.4)}
+.bazi-footer{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px;padding-top:8px;border-top:1px solid rgba(107,74,43,.15)}
+.bazi-clear{font-size:12px;color:#6a5540;background:none;border:none;padding:4px 2px;cursor:pointer;transition:color .25s;letter-spacing:2px;-webkit-tap-highlight-color:transparent;text-decoration:none}
+.bazi-clear:hover{color:#c89a5a}
 
 /* 圆形起卦按钮 */
 .btn-divine{position:relative;width:100px;height:100px;border-radius:50%;border:2px solid #c89a5a;background:radial-gradient(circle at 40% 35%,#5c3818,#2a1810);color:#f4e0b0;font-family:inherit;font-size:20px;letter-spacing:6px;cursor:pointer;margin:28px auto 0;display:block;transition:all .3s;box-shadow:0 4px 24px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,220,160,.2)}
@@ -416,9 +417,11 @@ body.resonate::before{filter:brightness(1.6);transition:filter .12s}
             <option value="M">男</option>
             <option value="F">女</option>
           </select>
-          <button class="bazi-clear" id="baziClear">清空</button>
         </div>
-        <div class="bazi-privacy"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#6a5540" stroke-width="1"/><line x1="6" y1="5" x2="6" y2="9" stroke="#6a5540" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="3.5" r="0.7" fill="#6a5540"/></svg> 生辰信息仅存于本机，不会上传</div>
+        <div class="bazi-footer">
+          <span class="bazi-privacy"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#6a5540" stroke-width="1"/><line x1="6" y1="5" x2="6" y2="9" stroke="#6a5540" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="3.5" r="0.7" fill="#6a5540"/></svg> 仅存本机</span>
+          <a class="bazi-clear" id="baziClear">清空</a>
+        </div>
       </div>
     </div>
     <button class="btn-divine" id="btnStart">起卦<span class="ripple"></span></button>
