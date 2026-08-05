@@ -47,11 +47,11 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .ceremony{text-align:center;margin-bottom:40px}
 .guide-text{font-size:15px;color:#8a7050;letter-spacing:2px;margin-bottom:28px;line-height:2}
 .guide-text em{color:#c89a5a;font-style:normal}
-.question-input{width:100%;max-width:400px;padding:14px 18px;background:rgba(20,14,8,.7);border:1px solid rgba(107,74,43,.5);color:#e8c987;font-family:inherit;font-size:15px;border-radius:8px;outline:none;letter-spacing:2px;text-align:center;transition:border-color .3s,box-shadow .3s}
+.question-input{display:block;margin:0 auto;width:100%;max-width:400px;padding:14px 18px;background:rgba(20,14,8,.7);border:1px solid rgba(107,74,43,.5);color:#e8c987;font-family:inherit;font-size:15px;border-radius:8px;outline:none;letter-spacing:2px;text-align:center;transition:border-color .3s,box-shadow .3s}
 .question-input:focus{border-color:#c89a5a;box-shadow:0 0 20px rgba(200,154,90,.15)}
 .question-input::placeholder{color:#6a5540}
 /* 生辰八字面板 */
-.bazi-toggle{display:inline-block;margin-top:18px;font-size:13px;color:#6a5540;letter-spacing:2px;cursor:pointer;transition:color .3s;user-select:none}
+.bazi-toggle{display:block;text-align:center;margin:18px auto 0;font-size:13px;color:#6a5540;letter-spacing:2px;cursor:pointer;transition:color .3s;user-select:none}
 .bazi-toggle:hover{color:#8a7050}
 .bazi-toggle .arrow{display:inline-block;transition:transform .3s;margin-right:4px}
 .bazi-toggle.open .arrow{transform:rotate(90deg)}
@@ -1669,20 +1669,23 @@ document.getElementById('btnAgain').addEventListener('click', async () => {
   /* 填充年份（1940-2010） */
   for(let y=2010;y>=1940;y--){const o=document.createElement('option');o.value=y;o.textContent=y+'年';selY.appendChild(o);}
   selY.insertAdjacentHTML('afterbegin','<option value="">--</option>');
+  selY.value=''; /* 强制重置，防止浏览器自动填充 */
   /* 填充月份 */
   selM.innerHTML='<option value="">--</option>';
   for(let m=1;m<=12;m++){const o=document.createElement('option');o.value=m;o.textContent=m+'月';selM.appendChild(o);}
   /* 填充日期 */
   function fillDays(){
-    const y=parseInt(selY.value)||2000;
-    const m=parseInt(selM.value)||1;
+    const y=parseInt(selY.value);
+    const m=parseInt(selM.value);
+    selD.innerHTML='<option value="">--</option>';
+    if(!y||!m) return; /* 年或月未选时不填日期 */
     const maxD=new Date(y,m,0).getDate();
     const curD=parseInt(selD.value);
-    selD.innerHTML='<option value="">--</option>';
     for(let d=1;d<=maxD;d++){const o=document.createElement('option');o.value=d;o.textContent=d+'日';selD.appendChild(o);}
     if(curD&&curD<=maxD) selD.value=curD;
   }
-  fillDays();
+  /* 初始不填日期，等年月都选了才填 */
+  selD.innerHTML='<option value="">--</option>'; /* 初始显示 -- */
   selY.addEventListener('change',fillDays);
   selM.addEventListener('change',fillDays);
   /* 填充时辰 */
