@@ -193,6 +193,14 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .aspect-icon{font-size:22px;margin-bottom:8px}
 .aspect-title{font-size:14px;color:#e8c987;letter-spacing:2px;margin-bottom:8px;border-bottom:1px dashed rgba(107,74,43,.3);padding-bottom:6px}
 .aspect-text{font-size:13px;color:#b89968;line-height:1.8}
+/* 应期指引 */
+.narrative.timing{padding:16px 18px;background:linear-gradient(135deg,rgba(30,20,12,.6),rgba(20,14,8,.4));border:1px solid rgba(200,154,90,.3);border-radius:10px;margin:12px 0 20px}
+.timing-lead{font-size:14px;color:#d4b483;line-height:1.8;margin-bottom:12px}
+.timing-block{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px dashed rgba(200,154,90,.2);border-bottom:1px dashed rgba(200,154,90,.2)}
+.timing-row{display:flex;align-items:baseline;gap:12px;font-size:13px;line-height:1.6}
+.timing-label{color:#8a7050;min-width:72px;letter-spacing:2px;flex-shrink:0}
+.timing-val{color:#e8c987;flex:1}
+.timing-note{font-size:13px;color:#b89968;line-height:1.8;margin-top:12px;padding-top:8px}
 
 /* ===== 底部 ===== */
 .footer{text-align:center;margin-top:48px;font-size:12px;color:#4a3a28;letter-spacing:3px}
@@ -548,6 +556,38 @@ document.getElementById('btnMute').addEventListener('click',function(){this.clas
 /* ========== 八经卦 ========== */
 const TRIGRAM={7:'乾',6:'兑',5:'离',4:'震',3:'巽',2:'坎',1:'艮',0:'坤'};
 const TRI_SYM={7:'☰',6:'☱',5:'☲',4:'☳',3:'☴',2:'☵',1:'☶',0:'☷'};
+/* 八卦应期（季节/农历月份/公历/五行/方位） */
+const TRIGRAM_TIMING={
+  7:{name:'乾',season:'秋冬之交',lunar:'戌亥月',solar:'公历10月中旬至12月中旬',element:'金',direction:'西北',hour:'戌亥时（19-23点）'},
+  6:{name:'兑',season:'仲秋',lunar:'酉月',solar:'公历9月中旬至10月中旬',element:'金',direction:'西',hour:'酉时（17-19点）'},
+  5:{name:'离',season:'仲夏',lunar:'午月',solar:'公历6月中旬至7月中旬',element:'火',direction:'南',hour:'午时（11-13点）'},
+  4:{name:'震',season:'仲春',lunar:'卯月',solar:'公历3月中旬至4月中旬',element:'木',direction:'东',hour:'卯时（5-7点）'},
+  3:{name:'巽',season:'春夏之交',lunar:'辰巳月',solar:'公历4月中旬至6月中旬',element:'木',direction:'东南',hour:'辰巳时（7-11点）'},
+  2:{name:'坎',season:'仲冬',lunar:'子月',solar:'公历12月中旬至次年1月中旬',element:'水',direction:'北',hour:'子时（23-1点）'},
+  1:{name:'艮',season:'冬春之交',lunar:'丑寅月',solar:'公历1月中旬至3月中旬',element:'土',direction:'东北',hour:'丑寅时（1-5点）'},
+  0:{name:'坤',season:'夏秋之交',lunar:'未申月',solar:'公历7月中旬至9月中旬',element:'土',direction:'西南',hour:'未申时（13-17点）'}
+};
+/* 应期推导 */
+function computeTiming(benId,bianId,changingIdx,benBits,bianBits){
+  const nChange=changingIdx.length;
+  // 取主卦（有变则用变卦，无变则用本卦）的上下卦
+  const srcBits=bianBits||benBits;
+  const lower=srcBits[0]+srcBits[1]*2+srcBits[2]*4;
+  const upper=srcBits[3]+srcBits[4]*2+srcBits[5]*4;
+  const pri=TRIGRAM_TIMING[upper];  // 上卦为外/果
+  const sec=TRIGRAM_TIMING[lower];  // 下卦为内/因
+  // 动爻位置推导缓急：初爻=近，上爻=远
+  let urgency='中';
+  let urgencyNote='应期在月余之间';
+  if(nChange>0){
+    const minIdx=Math.min(...changingIdx);
+    const maxIdx=Math.max(...changingIdx);
+    if(maxIdx<=1){urgency='近';urgencyNote='动在下爻，应期在近前，快则三五日，慢则不过月余';}
+    else if(minIdx>=3){urgency='远';urgencyNote='动在上爻，应期较远，需数月至半年方见分晓';}
+    else{urgency='中';urgencyNote='动在中爻，应期在月余至一季之间';}
+  }
+  return{pri,sec,priSym:TRI_SYM[upper],secSym:TRI_SYM[lower],urgency,urgencyNote,nChange};
+}
 const HEX_MAP={
 [7*8+7]:1,[0*8+0]:2,[4*8+2]:3,[2*8+1]:4,[7*8+2]:5,[2*8+7]:6,
 [2*8+0]:7,[0*8+2]:8,[7*8+3]:9,[6*8+7]:10,[7*8+0]:11,[0*8+7]:12,
@@ -1153,6 +1193,24 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
       <div class="quote">${GUA[bianId][1]}</div>
     </div>`;
   }
+
+  // ===== 4.5 应期 · 何时应验 =====
+  const benBits = yaos.map(n => (n===7||n===9) ? 1 : 0);
+  const bianBits = bianId ? yaos.map(n => n===9 ? 0 : (n===6 ? 1 : ((n===7) ? 1 : 0))) : null;
+  const timing = computeTiming(benId, bianId, changingIdx, benBits, bianBits);
+  const srcName = bianId ? `「${GUA[bianId][0]}」` : `「${GUA[benId][0]}」`;
+  const urgColor = timing.urgency==='近'?'#ff9a3d':timing.urgency==='远'?'#8ab4f8':'#c89a5a';
+  html += `<div class="section-title">◆ 应 期 · 何时应验</div>`;
+  html += `<div class="narrative timing sr">
+    <div class="timing-lead">此卦变入${srcName}，上卦为「${timing.pri.name}${timing.priSym}」，下卦为「${timing.sec.name}${timing.secSym}」。</div>
+    <div class="timing-block">
+      <div class="timing-row"><span class="timing-label">果成之时</span><span class="timing-val">${timing.pri.season} · ${timing.pri.lunar}（约${timing.pri.solar}）</span></div>
+      <div class="timing-row"><span class="timing-label">起因之月</span><span class="timing-val">${timing.sec.season} · ${timing.sec.lunar}（约${timing.sec.solar}）</span></div>
+      <div class="timing-row"><span class="timing-label">得力方位</span><span class="timing-val">${timing.pri.direction}（${timing.pri.element}象）</span></div>
+      <div class="timing-row"><span class="timing-label">吉时</span><span class="timing-val">${timing.pri.hour}</span></div>
+    </div>
+    <div class="timing-note">${timing.urgencyNote}。应期<b style="color:${urgColor}">${timing.urgency}</b>，宜在${timing.pri.direction}方位、${timing.pri.element}旺之时行事。</div>
+  </div>`;
 
   // ===== 5. 锦囊 · 给你的建议 =====
   html += `<div class="section-title">◆ 锦 囊 · 给你的建议</div>`;
