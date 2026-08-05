@@ -558,14 +558,14 @@ const TRIGRAM={7:'乾',6:'兑',5:'离',4:'震',3:'巽',2:'坎',1:'艮',0:'坤'};
 const TRI_SYM={7:'☰',6:'☱',5:'☲',4:'☳',3:'☴',2:'☵',1:'☶',0:'☷'};
 /* 八卦应期（季节/农历月份/公历/五行/方位） */
 const TRIGRAM_TIMING={
-  7:{name:'乾',season:'秋冬之交',lunar:'戌亥月',solar:'公历10月中旬至12月中旬',element:'金',direction:'西北',hour:'戌亥时（19-23点）'},
-  6:{name:'兑',season:'仲秋',lunar:'酉月',solar:'公历9月中旬至10月中旬',element:'金',direction:'西',hour:'酉时（17-19点）'},
-  5:{name:'离',season:'仲夏',lunar:'午月',solar:'公历6月中旬至7月中旬',element:'火',direction:'南',hour:'午时（11-13点）'},
-  4:{name:'震',season:'仲春',lunar:'卯月',solar:'公历3月中旬至4月中旬',element:'木',direction:'东',hour:'卯时（5-7点）'},
-  3:{name:'巽',season:'春夏之交',lunar:'辰巳月',solar:'公历4月中旬至6月中旬',element:'木',direction:'东南',hour:'辰巳时（7-11点）'},
-  2:{name:'坎',season:'仲冬',lunar:'子月',solar:'公历12月中旬至次年1月中旬',element:'水',direction:'北',hour:'子时（23-1点）'},
-  1:{name:'艮',season:'冬春之交',lunar:'丑寅月',solar:'公历1月中旬至3月中旬',element:'土',direction:'东北',hour:'丑寅时（1-5点）'},
-  0:{name:'坤',season:'夏秋之交',lunar:'未申月',solar:'公历7月中旬至9月中旬',element:'土',direction:'西南',hour:'未申时（13-17点）'}
+  7:{name:'乾',season:'秋冬之交',lunar:'戌亥月',solar:'10月中旬至12月中旬',startMonth:10,element:'金',direction:'西北',hour:'戌亥时（19-23点）'},
+  6:{name:'兑',season:'仲秋',lunar:'酉月',solar:'9月中旬至10月中旬',startMonth:9,element:'金',direction:'西',hour:'酉时（17-19点）'},
+  5:{name:'离',season:'仲夏',lunar:'午月',solar:'6月中旬至7月中旬',startMonth:6,element:'火',direction:'南',hour:'午时（11-13点）'},
+  4:{name:'震',season:'仲春',lunar:'卯月',solar:'3月中旬至4月中旬',startMonth:3,element:'木',direction:'东',hour:'卯时（5-7点）'},
+  3:{name:'巽',season:'春夏之交',lunar:'辰巳月',solar:'4月中旬至6月中旬',startMonth:4,element:'木',direction:'东南',hour:'辰巳时（7-11点）'},
+  2:{name:'坎',season:'仲冬',lunar:'子月',solar:'12月中旬至次年1月中旬',startMonth:12,crossYear:true,element:'水',direction:'北',hour:'子时（23-1点）'},
+  1:{name:'艮',season:'冬春之交',lunar:'丑寅月',solar:'1月中旬至3月中旬',startMonth:1,element:'土',direction:'东北',hour:'丑寅时（1-5点）'},
+  0:{name:'坤',season:'夏秋之交',lunar:'未申月',solar:'7月中旬至9月中旬',startMonth:7,element:'土',direction:'西南',hour:'未申时（13-17点）'}
 };
 /* 应期推导 */
 function computeTiming(benId,bianId,changingIdx,benBits,bianBits){
@@ -576,6 +576,19 @@ function computeTiming(benId,bianId,changingIdx,benBits,bianBits){
   const upper=srcBits[3]+srcBits[4]*2+srcBits[5]*4;
   const pri=TRIGRAM_TIMING[upper];  // 上卦为外/果
   const sec=TRIGRAM_TIMING[lower];  // 下卦为内/因
+  // 年份计算：根据当前日期和起始月份推导
+  const now=new Date();
+  const curYear=now.getFullYear();
+  const curMonth=now.getMonth()+1;
+  function getYear(startMonth){
+    // 如果起始月份在当前月份之后，为今年；否则为明年
+    return startMonth>curMonth?curYear:curYear+1;
+  }
+  const priYear=getYear(pri.startMonth);
+  const secYear=getYear(sec.startMonth);
+  // 跨年卦（坎卦 12-1月）
+  const priYearEnd=pri.crossYear?priYear+1:priYear;
+  const secYearEnd=sec.crossYear?secYear+1:secYear;
   // 动爻位置推导缓急：初爻=近，上爻=远
   let urgency='中';
   let urgencyNote='应期在月余之间';
@@ -586,7 +599,7 @@ function computeTiming(benId,bianId,changingIdx,benBits,bianBits){
     else if(minIdx>=3){urgency='远';urgencyNote='动在上爻，应期较远，需数月至半年方见分晓';}
     else{urgency='中';urgencyNote='动在中爻，应期在月余至一季之间';}
   }
-  return{pri,sec,priSym:TRI_SYM[upper],secSym:TRI_SYM[lower],urgency,urgencyNote,nChange};
+  return{pri,sec,priYear,secYear,priYearEnd,secYearEnd,priSym:TRI_SYM[upper],secSym:TRI_SYM[lower],urgency,urgencyNote,nChange};
 }
 const HEX_MAP={
 [7*8+7]:1,[0*8+0]:2,[4*8+2]:3,[2*8+1]:4,[7*8+2]:5,[2*8+7]:6,
@@ -1204,8 +1217,8 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question) {
   html += `<div class="narrative timing sr">
     <div class="timing-lead">此卦变入${srcName}，上卦为「${timing.pri.name}${timing.priSym}」，下卦为「${timing.sec.name}${timing.secSym}」。</div>
     <div class="timing-block">
-      <div class="timing-row"><span class="timing-label">果成之时</span><span class="timing-val">${timing.pri.season} · ${timing.pri.lunar}（约${timing.pri.solar}）</span></div>
-      <div class="timing-row"><span class="timing-label">起因之月</span><span class="timing-val">${timing.sec.season} · ${timing.sec.lunar}（约${timing.sec.solar}）</span></div>
+      <div class="timing-row"><span class="timing-label">果成之时</span><span class="timing-val">${timing.pri.season} · ${timing.pri.lunar}（约${timing.priYear}年${timing.pri.solar}${timing.pri.crossYear?`至${timing.priYearEnd}年`:''}）</span></div>
+      <div class="timing-row"><span class="timing-label">起因之月</span><span class="timing-val">${timing.sec.season} · ${timing.sec.lunar}（约${timing.secYear}年${timing.sec.solar}${timing.sec.crossYear?`至${timing.secYearEnd}年`:''}）</span></div>
       <div class="timing-row"><span class="timing-label">得力方位</span><span class="timing-val">${timing.pri.direction}（${timing.pri.element}象）</span></div>
       <div class="timing-row"><span class="timing-label">吉时</span><span class="timing-val">${timing.pri.hour}</span></div>
     </div>
