@@ -233,6 +233,40 @@ h1{font-size:36px;letter-spacing:12px;color:#e8c987;text-shadow:0 0 30px rgba(23
 .bazi-meta .fav{color:#c4d97a}
 .gua-el-note{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(200,154,90,.2);color:#d4b483}
 
+/* ===== 命格解析模态框 ===== */
+.mingge-overlay{position:fixed;inset:0;z-index:600;background:rgba(5,3,2,.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;display:flex;align-items:center;justify-content:center}
+.mingge-overlay.open{opacity:1;visibility:visible}
+.mingge-modal{width:92%;max-width:520px;max-height:82vh;background:linear-gradient(160deg,#1a130c 0%,#0e0a06 100%);border:1px solid rgba(200,154,90,.25);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 80px rgba(200,154,90,.06);transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.mingge-overlay.open .mingge-modal{transform:none}
+.mingge-header{padding:18px 20px 14px;border-bottom:1px solid rgba(200,154,90,.15);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mingge-title{font-size:16px;color:#e8c987;letter-spacing:4px;text-shadow:0 0 12px rgba(232,201,135,.2)}
+.mingge-close{width:32px;height:32px;border-radius:50%;border:1px solid rgba(200,154,90,.2);background:rgba(20,14,8,.6);color:#8a7050;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.mingge-close:hover{color:#e8c987;border-color:rgba(200,154,90,.4)}
+.mingge-body{padding:16px 20px 20px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;flex:1}
+.mingge-body::-webkit-scrollbar{width:4px}
+.mingge-body::-webkit-scrollbar-thumb{background:rgba(200,154,90,.2);border-radius:2px}
+.mg-section{margin-bottom:18px}
+.mg-section:last-child{margin-bottom:0}
+.mg-label{font-size:12px;color:#6a5540;letter-spacing:3px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.mg-label::before{content:'';display:inline-block;width:3px;height:12px;background:linear-gradient(180deg,#c89a5a,transparent);border-radius:2px}
+.mg-card{padding:14px 16px;background:rgba(20,14,8,.5);border:1px solid rgba(200,154,90,.12);border-radius:10px}
+.mg-card-title{font-size:15px;color:#e8c987;margin-bottom:6px;letter-spacing:2px}
+.mg-card-desc{font-size:13px;color:#b89968;line-height:1.8}
+.mg-tg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mg-tg-cell{text-align:center;padding:10px 4px;background:rgba(20,14,8,.4);border:1px solid rgba(200,154,90,.1);border-radius:8px}
+.mg-tg-pos{font-size:10px;color:#5a4838;letter-spacing:2px;margin-bottom:4px}
+.mg-tg-val{font-size:16px;color:#e8c987;letter-spacing:2px;text-shadow:0 0 8px rgba(232,201,135,.15)}
+.mg-tg-full{font-size:11px;color:#8a7050;margin-top:3px}
+.mg-traits{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mg-trait{font-size:12px;color:#c89a5a;padding:3px 10px;background:rgba(200,154,90,.08);border:1px solid rgba(200,154,90,.15);border-radius:12px;letter-spacing:1px}
+.mg-ln-title{font-size:14px;color:#c89a5a;margin-bottom:4px}
+.mg-ln-gz{font-size:18px;color:#e8c987;letter-spacing:4px;margin-right:8px;text-shadow:0 0 10px rgba(232,201,135,.2)}
+.mg-hint{font-size:11px;color:#5a4838;margin-top:12px;padding-top:10px;border-top:1px dashed rgba(200,154,90,.12);line-height:1.6;letter-spacing:1px}
+/* 入口按钮 */
+.mingge-entry{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#c89a5a;background:rgba(200,154,90,.08);border:1px solid rgba(200,154,90,.2);padding:6px 14px;border-radius:16px;cursor:pointer;transition:all .25s;letter-spacing:2px;margin-top:10px;-webkit-tap-highlight-color:transparent}
+.mingge-entry:hover{color:#e8c987;border-color:rgba(200,154,90,.4);background:rgba(200,154,90,.12)}
+.mingge-entry svg{opacity:.6}
+
 /* ===== 底部 ===== */
 .footer{text-align:center;margin-top:48px;font-size:12px;color:#4a3a28;letter-spacing:3px}
 
@@ -786,6 +820,155 @@ const BAZI=(function(){
     return{startAge,current,periods,forward,preAge:false};
   }
 
+  /* ===== 十神推算 ===== */
+  const SHENG_MAP={'木':'火','火':'土','土':'金','金':'水','水':'木'}; /* 我生 */
+  const KE_MAP={'木':'土','火':'金','土':'水','金':'木','水':'火'}; /* 我克 */
+  const SHENG_BY={'木':'水','火':'木','土':'火','金':'土','水':'金'}; /* 生我 */
+  const KE_BY={'木':'金','火':'水','土':'木','金':'火','水':'土'}; /* 克我 */
+  const YIN_YANG=[1,0,1,0,1,0,1,0,1,0]; /* 天干阴阳：甲阳乙阴… */
+  const TEN_GODS_NAME={'比':'比肩','劫':'劫财','食':'食神','伤':'伤官','财':'偏财','才':'正财','杀':'七杀','官':'正官','枭':'偏印','印':'正印'};
+
+  function tenGod(dayStemIdx,otherStemIdx){
+    const de=EL_STEM[STEMS[dayStemIdx]], oe=EL_STEM[STEMS[otherStemIdx]];
+    const same=(YIN_YANG[dayStemIdx]===YIN_YANG[otherStemIdx]);
+    if(de===oe) return same?'比':'劫';
+    if(SHENG_MAP[de]===oe) return same?'食':'伤';
+    if(KE_MAP[de]===oe) return same?'财':'才';
+    if(SHENG_BY[de]===oe) return same?'杀':'官';
+    if(KE_BY[de]===oe) return same?'枭':'印';
+    return '?';
+  }
+
+  function pillarTenGods(pillars,dayStemIdx){
+    return pillars.map((p,i)=>{
+      if(!p) return null;
+      const tg=tenGod(dayStemIdx,p.stem);
+      return{abbr:tg,full:TEN_GODS_NAME[tg],pos:['年','月','日','时'][i]};
+    });
+  }
+
+  /* ===== 格局推算 ===== */
+  const BRANCH_HIDDEN={
+    '子':['癸'],'丑':['己','癸','辛'],'寅':['甲','丙','戊'],'卯':['乙'],
+    '辰':['戊','乙','癸'],'巳':['丙','庚','戊'],'午':['丁','己'],
+    '未':['己','丁','乙'],'申':['庚','壬','戊'],'酉':['辛'],
+    '戌':['戊','辛','丁'],'亥':['壬','甲']
+  };
+  const PATTERN_DESC={
+    '比':{name:'比肩格',desc:'独立自主，竞争进取，喜自由不喜拘束'},
+    '劫':{name:'劫财格',desc:'果敢大胆，善于合作，但需防破财争执'},
+    '食':{name:'食神格',desc:'才华横溢，温和宽厚，喜艺术美食，一生多福'},
+    '伤':{name:'伤官格',desc:'聪明伶俐，创意十足，但性格叛逆需收敛'},
+    '财':{name:'偏财格',desc:'慷慨大方，善交际理财，偏财运佳'},
+    '才':{name:'正财格',desc:'勤俭踏实，重视稳定，正财运亨通'},
+    '杀':{name:'七杀格',desc:'果断刚毅，有魄力权威，宜武职或管理'},
+    '官':{name:'正官格',desc:'正直守信，重视名誉地位，仕途顺遂'},
+    '枭':{name:'偏印格',desc:'思维独特，悟性高，宜学术宗教艺术'},
+    '印':{name:'正印格',desc:'仁慈善良，学识渊博，得长辈庇护'}
+  };
+  function determinePattern(dayStemIdx,monthBranchIdx,pillars){
+    const mb=BRANCHES[monthBranchIdx];
+    const hidden=BRANCH_HIDDEN[mb]||[];
+    if(hidden.length===0) return{name:'普通格',desc:'格局平和，无特别偏向'};
+    /* 取月支本气透干之十神定格 */
+    const mainStem=hidden[0];
+    const mainIdx=STEMS.indexOf(mainStem);
+    const tg=tenGod(dayStemIdx,mainIdx);
+    const info=PATTERN_DESC[tg]||{name:'普通格',desc:'格局平和'};
+    /* 辅格：查看是否有其他透干 */
+    let aux='';
+    if(hidden.length>1){
+      const auxIdx=STEMS.indexOf(hidden[1]);
+      const auxTg=tenGod(dayStemIdx,auxIdx);
+      const auxInfo=PATTERN_DESC[auxTg];
+      if(auxInfo) aux=`辅${auxInfo.name}`;
+    }
+    return{abbr:tg,...info,aux};
+  }
+
+  /* ===== 性格推算（基于十神分布+日主五行） ===== */
+  const TG_TRAITS={
+    '比':{keywords:['独立','自主','竞争'],weight:1},
+    '劫':{keywords:['果敢','冒险','合作'],weight:1},
+    '食':{keywords:['温和','才华','浪漫'],weight:1},
+    '伤':{keywords:['聪慧','叛逆','创意'],weight:1},
+    '财':{keywords:['慷慨','大方','务实'],weight:1},
+    '才':{keywords:['勤俭','踏实','稳重'],weight:1},
+    '杀':{keywords:['果断','刚毅','权威'],weight:1},
+    '官':{keywords:['正直','守信','自律'],weight:1},
+    '枭':{keywords:['独特','敏锐','内向'],weight:1},
+    '印':{keywords:['仁慈','博学','宽容'],weight:1}
+  };
+  const DAYMASTER_TRAITS={
+    '甲':'如参天大树，正直挺拔，有担当有理想，宁折不弯',
+    '乙':'如花草藤萝，柔韧灵活，善于攀附适应环境',
+    '丙':'如太阳光芒，热情开朗，光明磊落普照万物',
+    '丁':'如烛火星光，温柔细腻，内敛而有洞察力',
+    '戊':'如高山大地，稳重厚实，诚信宽厚包容万物',
+    '己':'如田园沃土，谦逊温和，善于滋养孕育他人',
+    '庚':'如刀斧金铁，刚毅果断，义气分明行事利落',
+    '辛':'如珠宝美玉，精致敏感，外柔内刚有品位',
+    '壬':'如江河大海，智慧深邃，胸怀宽广善变通',
+    '癸':'如雨露甘霖，细腻敏感，润物无声洞察入微'
+  };
+  function analyzePersonality(dayStemIdx,tenGodsArr){
+    const dayStem=STEMS[dayStemIdx];
+    const base=DAYMASTER_TRAITS[dayStem]||'';
+    /* 统计十神出现频次 */
+    const freq={};
+    tenGodsArr.forEach(tg=>{
+      if(!tg||tg.pos==='日') return;
+      freq[tg.abbr]=(freq[tg.abbr]||0)+1;
+    });
+    /* 取出现最多的十神特征 */
+    const sorted=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+    const topTraits=[];
+    sorted.slice(0,3).forEach(([abbr])=>{
+      const t=TG_TRAITS[abbr];
+      if(t) topTraits.push(...t.keywords);
+    });
+    /* 去重取前5 */
+    const unique=[...new Set(topTraits)].slice(0,5);
+    return{dayStem,base,traits:unique,traitStr:unique.join('、')};
+  }
+
+  /* ===== 流年推算 ===== */
+  const LIUNIAN_DESC={
+    '比':{title:'比肩流年',text:'自主独立之年，宜拓展人脉合作，但防竞争加剧'},
+    '劫':{title:'劫财流年',text:'变动活跃之年，财运起伏需防破财，忌冲动投资'},
+    '食':{title:'食神流年',text:'才华展现之年，宜创作表达，口福好运，心态舒畅'},
+    '伤':{title:'伤官流年',text:'创意涌现之年，适合突破创新，但防口舌是非'},
+    '财':{title:'偏财流年',text:'意外机遇之年，偏财运佳，宜灵活把握但忌贪心'},
+    '才':{title:'正财流年',text:'稳步增收之年，正财亨通，宜踏实经营'},
+    '杀':{title:'七杀流年',text:'压力考验之年，宜化解矛盾，借压力成长蜕变'},
+    '官':{title:'正官流年',text:'事业上升之年，升职有望，宜守规矩重名誉'},
+    '枭':{title:'偏印流年',text:'学习感悟之年，宜进修深造，但防多疑孤僻'},
+    '印':{title:'正印流年',text:'贵人扶持之年，学业有成，身心健康'}
+  };
+  function computeLiunian(dayStemIdx,gender){
+    const now=new Date();
+    const curYear=now.getFullYear();
+    const yearStemIdx=((curYear-4)%10+10)%10;
+    const yearBranchIdx=((curYear-4)%12+12)%12;
+    const tg=tenGod(dayStemIdx,yearStemIdx);
+    const info=LIUNIAN_DESC[tg]||{title:'流年',text:'平稳过渡之年'};
+    /* 流年地支与日支关系 */
+    const yearBranch=BRANCHES[yearBranchIdx];
+    const yearEl=EL_BRANCH[yearBranch];
+    const dayEl=EL_STEM[STEMS[dayStemIdx]];
+    let branchRel='';
+    if(yearEl===dayEl) branchRel='流年地支与日主同气，助力明显';
+    else if(SHENG_BY[dayEl]===yearEl) branchRel='流年地支生扶日主，贵人暗助';
+    else if(KE_BY[dayEl]===yearEl) branchRel='流年地支克制日主，压力较大需韬光养晦';
+    else if(SHENG_MAP[dayEl]===yearEl) branchRel='日主流年生扶流年，精力外泄宜节制';
+    else branchRel='日主克制流年，主动掌控但耗精力';
+    return{
+      year:curYear,ganZhi:STEMS[yearStemIdx]+yearBranch,
+      tenGodAbbr:tg,tenGodFull:TEN_GODS_NAME[tg],
+      ...info,branchRel,element:yearEl
+    };
+  }
+
   /* 主计算函数 */
   function calculate(solarYear,solarMonth,solarDay,hourBranchIdx,gender){
     const yp=yearPillar(solarYear,solarMonth,solarDay);
@@ -803,6 +986,11 @@ const BAZI=(function(){
     const lc=lichunDate(solarYear);
     const effZodiac=sd<lc?((solarYear-5)%12+12)%12:zodiacIdx;
     const daYun=computeDaYun(yp.stem,mp,dp,solarYear,solarMonth,solarDay,gender);
+    /* 命格扩展 */
+    const tgArr=pillarTenGods(pillars,dp.stem);
+    const pattern=determinePattern(dp.stem,mp.branch,pillars);
+    const personality=analyzePersonality(dp.stem,tgArr);
+    const liunian=computeLiunian(dp.stem,gender);
     return{
       yearPillar:yp,monthPillar:mp,dayPillar:dp,hourPillar:hp,
       pillars:[yp,mp,dp,hp],
@@ -811,11 +999,13 @@ const BAZI=(function(){
       zodiac:ZODIAC[effZodiac],
       hasHour:hp!==null,
       gender:gender||null,
-      daYun
+      daYun,
+      tenGods:tgArr,
+      pattern,personality,liunian
     };
   }
 
-  return{calculate,STEMS,BRANCHES,ZODIAC,EL_STEM,EL_BRANCH,SHICHEN_MAP};
+  return{calculate,STEMS,BRANCHES,ZODIAC,EL_STEM,EL_BRANCH,SHICHEN_MAP,TEN_GODS_NAME,tenGod};
 })();
 
 /* ========== 八经卦 ========== */
@@ -1384,6 +1574,7 @@ async function divine() {
     const gender=document.getElementById('baziGender').value||null;
     baziData=BAZI.calculate(byy,bmm,bdd,hourIdx,gender);
   }
+  window._lastBaziData=baziData;
   renderInterpret(yaos,changingIdx,benId,bianId,q,baziData);
   setupScrollReveal();
   pageResult.classList.add('revealed');
@@ -1597,6 +1788,7 @@ function renderInterpret(yaos, changingIdx, benId, bianId, question, baziData) {
         ${!baziData.daYun&&baziData.gender?'':''}
         ${!baziData.gender?'<div style="color:#5a4838">ℹ 填写性别可推算大运，应期更精准</div>':''}
         ${elRelation?`<div class="gua-el-note">${elRelation}</div>`:''}
+                <div><button class="mingge-entry" onclick="window._openMingge(window._lastBaziData)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="currentColor" stroke-width="1"/><path d="M7 4v3.5M7 9.5h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>查看命格解析</button></div>
       </div>
     </div>`;
   }
@@ -1783,6 +1975,66 @@ document.getElementById('btnAgain').addEventListener('click', async () => {
     try{localStorage.removeItem('shicao_bazi');}catch(e){}
   });
 })();
+
+/* ===== 命格解析模态框逻辑 ===== */
+window._openMingge=function(baziData){
+  if(!baziData||!baziData.tenGods) return;
+  const overlay=document.getElementById('minggeOverlay');
+  const body=document.getElementById('minggeBody');
+  const closeBtn=document.getElementById('minggeClose');
+  if(!overlay||!body) return;
+  /* 绑定关闭事件（仅一次） */
+  if(!overlay._bound){
+    overlay._bound=true;
+    closeBtn.addEventListener('click',()=>overlay.classList.remove('open'));
+    overlay.addEventListener('click',e=>{if(e.target===overlay) overlay.classList.remove('open');});
+  }
+  const S=BAZI.STEMS,B=BAZI.BRANCHES;
+  let h='';
+  /* 十神四柱分布 */
+  h+=`<div class="mg-section"><div class="mg-label">十 神 分 布</div><div class="mg-tg-grid">`;
+  baziData.tenGods.forEach((tg,i)=>{
+    const pos=['年柱','月柱','日柱','时柱'][i];
+    if(!tg){h+=`<div class="mg-tg-cell"><div class="mg-tg-pos">${pos}</div><div class="mg-tg-val">—</div><div class="mg-tg-full">未知</div></div>`;return;}
+    h+=`<div class="mg-tg-cell"><div class="mg-tg-pos">${pos}</div><div class="mg-tg-val">${tg.abbr}</div><div class="mg-tg-full">${tg.full}</div></div>`;
+  });
+  h+=`</div></div>`;
+  /* 格局 */
+  const pat=baziData.pattern;
+  h+=`<div class="mg-section"><div class="mg-label">命 局 格 局</div><div class="mg-card">`;
+  h+=`<div class="mg-card-title">${pat.name}${pat.aux?' · '+pat.aux:''}</div>`;
+  h+=`<div class="mg-card-desc">${pat.desc}</div></div></div>`;
+  /* 性格 */
+  const per=baziData.personality;
+  h+=`<div class="mg-section"><div class="mg-label">性 格 分 析</div><div class="mg-card">`;
+  h+=`<div class="mg-card-title">日主 ${per.dayStem}</div>`;
+  h+=`<div class="mg-card-desc">${per.base}</div>`;
+  if(per.traits.length>0) h+=`<div class="mg-traits">${per.traits.map(t=>`<span class="mg-trait">${t}</span>`).join('')}</div>`;
+  h+=`</div></div>`;
+  /* 流年 */
+  const ln=baziData.liunian;
+  h+=`<div class="mg-section"><div class="mg-label">今 年 流 年</div><div class="mg-card">`;
+  h+=`<div class="mg-ln-title"><span class="mg-ln-gz">${ln.ganZhi}</span>${ln.title}（${ln.year}）</div>`;
+  h+=`<div class="mg-card-desc">${ln.text}</div>`;
+  if(ln.branchRel) h+=`<div class="mg-card-desc" style="margin-top:6px;color:#8a7050;font-size:12px">ℹ ${ln.branchRel}</div>`;
+  h+=`</div></div>`;
+  /* 提示 */
+  h+=`<div class="mg-hint">以上命格解析基于传统命理学简化推算，仅供娱乐参悟，切勿迷信。</div>`;
+  body.innerHTML=h;
+  overlay.classList.add('open');
+};
 </script>
+
+<!-- 命格解析模态框 -->
+<div class="mingge-overlay" id="minggeOverlay">
+  <div class="mingge-modal">
+    <div class="mingge-header">
+      <div class="mingge-title">命 格 解 析</div>
+      <button class="mingge-close" id="minggeClose">×</button>
+    </div>
+    <div class="mingge-body" id="minggeBody"></div>
+  </div>
+</div>
+
 </body>
 </html>
